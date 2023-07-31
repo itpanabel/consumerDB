@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+:root {
+    font-size: 1rem;
+    --heading-font: 'Quattrocento', serif;
+    --body-font: 'Quicksand', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--heading-font);
+  }
+
+  body {
+    font-family: var(--body-font);
+  }
+
+  .email-autocomplete {
+    color: #c2c2c2;
+  }
+
+  #guerlainSpecific {
+    display: none;
+  }
