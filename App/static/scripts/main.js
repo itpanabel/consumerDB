@@ -63,9 +63,9 @@ domains: [
 let myIP;
 fetch('https://api.ipify.org?format=json')
     .then((response) => response.json())
-    .then((data) => myIP = data.ip)
+    .then((data) => console.log("Public IP: ", data.ip))
     .catch((error) => console.error);
-console.log("My public IP is: ", myIP);
+
 
 /**
  * unhide and hide Guerlain

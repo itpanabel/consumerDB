@@ -1,0 +1,16 @@
+[project]
+name = "App"
+version = "1.0.0"
+description = "Basic Froms for Collect Customer Data and send it to Mailchimp."
+requires-python = ">=3.10"
+authors = [
+    { name="Alan Montoya", email="alan@panabel.com" },
+]
+dependencies = [
+    "flask",
+    "mailchimp-marketing",
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"

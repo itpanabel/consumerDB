@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 
 def create_app(test_config=None):
     # Create and configure the App
@@ -16,18 +16,24 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.from_mapping(test_config)
 
-
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
 
+    #temp index
+    @app.route("/")
+    def index():
+        return render_template("base.html")
+
     # DB
     from . import db
     db.init_app(app)
 
-    # Register Auth Blueprint
-    from . import auth
+    # Register All Blueprint
+    from . import auth, entity, stores
     app.register_blueprint(auth.bp)
+    app.register_blueprint(entity.bp)
+    app.register_blueprint(stores.bp)
 
     return app

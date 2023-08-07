@@ -14,6 +14,8 @@
   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/country-select-js/2.1.1/css/countrySelect.min.css' integrity='sha512-HHSUgqDtmyVfGT0pdLVRKcktf9PfLMfFzoiBjh9NPBzw94YFTS5DIwZ12Md/aDPcrkOstXBp9uSAOCl5W2/AOQ==' crossorigin='anonymous'/>
   <!-- Bootstrap 5.3.1 -->
   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/css/bootstrap.min.css' integrity='sha512-Z/def5z5u2aR89OuzYcxmDJ0Bnd5V1cKqBEbvLOiUNWdg9PQeXVvXLI90SE4QOHGlfLqUnDNVAYyZi8UwUTmWQ==' crossorigin='anonymous'/>
+  <!-- Fontawesome -->
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' integrity='sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==' crossorigin='anonymous'/>
   <!-- Custom Styles -->
   <style>
     .country-select { display: block; }
@@ -34,16 +36,18 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link" href="#">Home</a>
+            {% if g.user %}
+            <a href="{{ url_for('entity.index') }}" class="nav-link {% if request.endpoint=='entity.index' %}active{% endif %}">Paises</a>
+            <a href="{{ url_for('stores.index') }}" class="nav-link {% if request.endpoint=='stores.index' %}active{% endif %}">Tiendas</a>
+            <a href="#" class="nav-link {% if request.endpoint=='beautyadvisor.index' %}active{% endif %}">Consejeras</a>
+            <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user['username'] }} | Log Out</a>
+            {% else %}
             <a class="nav-link" href="#">ConsumerDB-PA</a>
             <a class="nav-link" href="#">ConsumerDB-CO</a>
             <a class="nav-link" href="#">ConsumerDB-CR</a>
-            {% if g.user %}
-              <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user['username'] }} / Log Out</a>
-            {% else %}
-              <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
+            <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
             {% endif %}
-            <a class="nav-link disabled">Disabled</a>
           </div>
         </div>
       </div>
@@ -52,6 +56,7 @@
   <!-- End Navbar -->
   <!-- Content -->
   <div class="container">
+    <br><br><br>
     {% block header %}
 
     {% endblock header %}
@@ -75,7 +80,7 @@
     $("#country").countrySelect({
       defaultCountry: "",
       preferredCountries: ["pa", "cr", "co"]
-    })
+    });
   </script>
 </body>
 </html>

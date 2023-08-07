@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Subsidiarias{% endblock title %}</h1>
+  {% if g.user %}
+    <a href="{{ url_for('entity.create') }}" class="btn btn-success">Nueva Entidad</a>
+  {% endif %}
+{% endblock header %}
+
+{% block content %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">País</th>
+        <th scope="col" colspan="3">Mailchimp ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entity in entities %}
+        <tr>
+          <th scope="row">{{ entity["id"] }}</th>
+          <td>{{ entity["entityname"] }}</td>
+          <td>{{ entity["mailchimpentityid"] }}</td>
+          {% if g.user %}
+          <td><a href="{{ url_for('entity.update', id=entity['id']) }}" class="text-primary"><i class="fa-regular fa-pen-to-square"></i></a></td>
+          <td><a href="{{ url_for('entity.delete', id=entity['id']) }}" class="text-danger"><i class="fa-regular fa-trash-can"></i></a></td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock content %}

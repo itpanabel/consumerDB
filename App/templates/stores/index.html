@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Tiendas{% endblock title %}</h1>
+  {% if g.user %}
+    <a href="{{ url_for('stores.create') }}" class="btn btn-success">Nueva Tienda</a>
+  {% endif %}
+{% endblock header %}
+
+{% block content %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Tienda</th>
+        <th scope="col" colspan="3">País</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for store in stores %}
+        <tr>
+          <th scope="row">{{ store["id"] }}</th>
+          <td>{{ store["storename"] }}</td>
+          <td>{{ store["entityname"] }}</td>
+          {% if g.user %}
+          <td><a href="{{ url_for('stores.update', id=store['id']) }}" class="text-primary"><i class="fa-regular fa-pen-to-square"></i></a></td>
+          <td><a href="{{ url_for('stores.delete', id=store['id']) }}" class="text-danger"><i class="fa-regular fa-trash-can"></i></a></td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock content %}

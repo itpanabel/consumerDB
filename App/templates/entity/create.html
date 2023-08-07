@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Crear Entidad{% endblock title %}</h1>
+{% endblock header %}
+
+{% block content %}
+  <form method="post" class="row g-3">
+    <div class="col-md-6">
+      <label for="entidad" class="form-label">Entity</label>
+      <input type="text" class="form-control" id="entidad" name="entidad" required>
+    </div>
+    <div class="col-md-6">
+      <label for="mailchimpid" class="form-label">Mailchimp ID</label>
+      <input type="mailchimpid" class="form-control" id="mailchimpid" name="mailchimpid" required>
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto">
+      <input type="submit" value="Crear" class="btn btn-primary btn-lg">
+      <a href="{{ url_for('entity.index') }}" class="btn btn-danger btn-lg">Cancelar</a>
+    </div>
+  </form>
+{% endblock content %}
