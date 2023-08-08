@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Actualizar Consejera{% endblock title %}</h1>
+{% endblock header %}
+
+{% block content %}
+  <form method="post" class="row g-3">
+    <div class="col-md-6">
+      <label for="fullname" class="form-label">Consejera</label>
+      <input type="text" class="form-control" id="fullname" name="fullname" value="{{ request.form['fullname'] or beauty_advisor['fullname'] }}" required>
+    </div>
+    <div class="col-md-6">
+      <label for="entity" class="form-label">País</label>
+      <select name="entity" id="entity" class="form-select">
+        {% for entity in entities %}
+          {% if beauty_advisor["subsidiaryid"] == entity["id"] %}
+            <option value="{{ beauty_advisor['subsidiaryid'] }}" selected>{{ entity["entityname"] }}</option>
+          {% else %}
+            <option value="{{ entity['id'] }}">{{ entity["entityname"] }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto">
+      <input type="submit" value="Actualizar" class="btn btn-primary btn-lg">
+      <a href="{{ url_for('beautyadvisors.index') }}" class="btn btn-danger btn-lg">Cancelar</a>
+    </div>
+  </form>
+{% endblock content %}

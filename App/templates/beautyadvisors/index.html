@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Consejeras{% endblock title %}</h1>
+  {% if g.user %}
+    <a href="{{ url_for('beautyadvisors.create') }}" class="btn btn-success">Nueva Consejera</a>
+  {% endif %}
+{% endblock header %}
+
+{% block content %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nombre de la consejera</th>
+        <th scope="col" colspan="3">País</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for advisor in beautyadvisors %}
+        <tr>
+          <th scope="row">{{ advisor["id"] }}</th>
+          <td>{{ advisor["fullname"] }}</td>
+          <td>{{ advisor["entityname"] }}</td>
+          {% if g.user %}
+          <td><a href="{{ url_for('beautyadvisors.update', id=advisor['id']) }}" class="text-primary"><i class="fa-regular fa-pen-to-square"></i></a></td>
+          <td><a href="{{ url_for('beautyadvisors.delete', id=advisor['id']) }}" class="text-danger"><i class="fa-regular fa-trash-can"></i></a></td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock content %}

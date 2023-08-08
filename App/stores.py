@@ -37,6 +37,7 @@ def get_store(id):
 
 
 @bp.route("/create", methods=("GET", "POST"))
+@login_required
 def create():
     """Create a new Store"""
     if request.method == "POST":
@@ -114,6 +115,7 @@ def update(id):
 
 
 @bp.route("<int:id>/detele", methods=("GET", "POST"))
+@login_required
 def delete(id):
     """Delete Store from Database."""
     get_store(id)

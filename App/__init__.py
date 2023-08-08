@@ -31,9 +31,10 @@ def create_app(test_config=None):
     db.init_app(app)
 
     # Register All Blueprint
-    from . import auth, entity, stores
+    from . import auth, entity, stores, beautyadvisors
     app.register_blueprint(auth.bp)
     app.register_blueprint(entity.bp)
     app.register_blueprint(stores.bp)
+    app.register_blueprint(beautyadvisors.bp)
 
     return app
