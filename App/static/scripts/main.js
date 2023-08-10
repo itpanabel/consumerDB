@@ -31,32 +31,6 @@ domains: [
 
 
 /**
- * Geolocalization
- */
-// let LATITUDE = 0.00;
-// let LONGITUDE = 0.00
-// let geodata = navigator.geolocation;
-
-// function successGeoData(position) {
-//   const myLatitude = position.coords.latitude;
-//   const myLongitude = position.coords.longitude;
-//   let geodataMsg = "Geo data obtained";
-//   updateGeoData(myLatitude, myLongitude);
-// }
-
-// function errorGeoData(error) {
-//   let geodataMsg = "Unable to obtain Geo Data";
-// }
-
-// function updateGeoData(lat, lon) {
-//   LATITUDE = lat;
-//   LONGITUDE = lon;
-// }
-// console.log(geodata.getCurrentPosition(successGeoData, errorGeoData));
-
-
-
-/**
  * Obtain IP Address
  */
 
@@ -73,16 +47,16 @@ fetch('https://api.ipify.org?format=json')
  * @returns nothing
  */
 function unhideGuerlain() {
-let guerlainsection = document.querySelector("#guerlainSpecific");
-let guerlainCheckboxes = document.getElementsByName("guerlain-specific");
-if (guerlainsection.style.display === "block") {
-    guerlainsection.style.display = "none";
-    for (i = 0; i < guerlainCheckboxes.length; i++) {
-    guerlainCheckboxes[i].checked = false;
+    let guerlainsection = document.querySelector("#guerlainSpecific");
+    let guerlainCheckboxes = document.getElementsByName("guerlain-specific");
+    if (guerlainsection.style.display === "block") {
+        guerlainsection.style.display = "none";
+        for (i = 0; i < guerlainCheckboxes.length; i++) {
+            guerlainCheckboxes[i].checked = false;
+        }
+    } else {
+        guerlainsection.style.display = "block";
     }
-} else {
-    guerlainsection.style.display = "block";
-}
 }
 
 /**
@@ -94,7 +68,7 @@ function bdayFormat(mydate) {
     let month = String(mydate.getMonth()+1).padStart(2, '0');
     let day = String(mydate.getDate()).padStart(2, '0');
     return `${month}/${day}`
-}
+};
 
 
 /**
@@ -110,4 +84,32 @@ function isoDate(mydate) {
     let minutes = String(mydate.getMinutes()).padStart(2, '0');
     let seconds = String(mydate.getSeconds()).padStart(2, '0');
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
-}
+};
+
+
+/**
+ * Show Notification on Success
+ */
+function notifyMe() {
+    if (!("Notification" in window)) {
+      // Check if the browser supports notifications
+      alert("Este navegador no soporta notificaciones");
+    } else if (Notification.permission === "granted") {
+      // Check whether notification permissions have already been granted;
+      // if so, create a notification
+      const notification = new Notification("Cliente Guardado Exitosamente!");
+      // …
+    } else if (Notification.permission !== "denied") {
+      // We need to ask the user for permission
+      Notification.requestPermission().then((permission) => {
+        // If the user accepts, let's create a notification
+        if (permission === "granted") {
+          const notification = new Notification("Cliente Guardado Exitosamente!");
+          // …
+        }
+      });
+    }
+
+    // At last, if the user has denied notifications, and you
+    // want to be respectful there is no need to bother them anymore.
+};

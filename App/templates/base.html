@@ -38,15 +38,15 @@
           <div class="navbar-nav">
             <a class="nav-link" href="#">Home</a>
             {% if g.user %}
-            <a href="{{ url_for('entity.index') }}" class="nav-link {% if request.endpoint=='entity.index' %}active{% endif %}">Paises</a>
-            <a href="{{ url_for('stores.index') }}" class="nav-link {% if request.endpoint=='stores.index' %}active{% endif %}">Tiendas</a>
-            <a href="{{ url_for('beautyadvisors.index') }}" class="nav-link {% if request.endpoint=='beautyadvisors.index' %}active{% endif %}">Consejeras</a>
-            <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user['username'] }} | Log Out</a>
+              <a href="{{ url_for('entity.index') }}" class="nav-link {% if request.endpoint=='entity.index' %}active{% endif %}">Paises</a>
+              <a href="{{ url_for('stores.index') }}" class="nav-link {% if request.endpoint=='stores.index' %}active{% endif %}">Tiendas</a>
+              <a href="{{ url_for('beautyadvisors.index') }}" class="nav-link {% if request.endpoint=='beautyadvisors.index' %}active{% endif %}">Consejeras</a>
+              <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user['username'] }} | Log Out</a>
             {% else %}
-            <a class="nav-link" href="#">ConsumerDB-PA</a>
-            <a class="nav-link" href="#">ConsumerDB-CO</a>
-            <a class="nav-link" href="#">ConsumerDB-CR</a>
-            <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
+              <a class="nav-link" href="/panama">ConsumerDB-PA</a>
+              <a class="nav-link" href="#">ConsumerDB-CO</a>
+              <a class="nav-link" href="#">ConsumerDB-CR</a>
+              <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
             {% endif %}
           </div>
         </div>
