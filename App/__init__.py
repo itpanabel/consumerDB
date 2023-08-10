@@ -1,6 +1,9 @@
 import os
 from flask import Flask, render_template
 
+from . import forms
+
+
 def create_app(test_config=None):
     # Create and configure the App
     app = Flask(__name__, instance_relative_config=True)
@@ -22,7 +25,7 @@ def create_app(test_config=None):
         pass
 
     #temp index
-    @app.route("/")
+    @app.route("/test")
     def index():
         return render_template("base.html")
 
@@ -36,5 +39,7 @@ def create_app(test_config=None):
     app.register_blueprint(entity.bp)
     app.register_blueprint(stores.bp)
     app.register_blueprint(beautyadvisors.bp)
+    app.register_blueprint(forms.bp)
+    app.add_url_rule("/", endpoint="index")
 
     return app

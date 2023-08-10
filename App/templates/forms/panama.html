@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="container">
+    <h1>{% block title %}Base de datos Clientes{% endblock title %}</h1>
+  </div>
+{% endblock header %}
+
+{% block content %}
+  <div class="container">
+    <!-- General Data -->
+    <form class="row g-3" method="post">
+      <div class="col-md-6">
+        <label for="fname" class="form-label" >Nombre</label>
+        <input type="text" class="form-control" id="fname" name="NOMBRE">
+      </div>
+      <div class="col-md-6">
+        <label for="lname" class="form-label">Apellido</label>
+        <input type="text" class="form-control" id="lname" name="APELLIDO">
+      </div>
+      <div class="col-md-6">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control email-autocomplete" id="email" name="email_address">
+      </div>
+      <div class="col-md-6">
+        <label for="phone" class="form-label">Teléfono</label>
+        <input type="tel" class="form-control" id="phone" name="TEL" placeholder="####-####">
+      </div>
+      <div class="col-md-6">
+        <label for="birthday" class="form-label">Cumpleaños</label>
+        <input type="date" class="form-control" id="birthday" name="BDAY">
+      </div>
+      <div class="col-md-6">
+        <label for="gender" class="form-label">Genero</label>
+        <select id="gender" class="form-select" name="GENERO">
+          <option selected value="">- Seleccione una Opción -</option>
+          <option value="Mujer">Femenino</option>
+          <option value="Hombre">Masculino</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+      <!-- Country -->
+      <div class="col-md-6">
+        <label for="country" class="form-label" id="country-label">País de Residencia</label>
+        <input type="text" class="form-control" id="country" name="PAIS">
+        <input type="hidden" class="form-control" id="country_code" >
+      </div>
+      <div class="col-md-6">
+        <label for="provincia" class="form-label">Provincia</label>
+        <select name="provincia" id="provincia" class="form-select">
+          <option selected value="">- Seleccione una Opción -</option>
+          <option value="Bocas del Toro">Bocas del Toro</option>
+          <option value="Coclé">Coclé</option>
+          <option value="Colón">Colón</option>
+          <option value="Chiriquí">Chiriquí</option>
+          <option value="Darién">Darién</option>
+          <option value="Herrera">Herrera</option>
+          <option value="Los Santos">Los Santos</option>
+          <option value="Panamá">Panamá</option>
+          <option value="Veraguas">Veraguas</option>
+          <option value="Comarca Kuna Yala">Comarca Kuna Yala</option>
+          <option value="Comarca Embera-Wounaan">Comarca Embera-Wounaan</option>
+          <option value="Comarca Ngäbe-Blugé">Comarca Ngäbe-Blugé</option>
+          <option value="Panamá Oeste">Panamá Oeste</option>
+          <option value="Frontera">Frontera</option>
+
+        </select>
+      </div>
+      <!-- Stores -->
+      <div class="col-12">
+        <fieldset>
+          <legend>Tienda</legend>
+          <select id="punto-de-venta" class="form-select" name="TIENDA">
+            <option selected value="">- Seleccione una Opción -</option>
+            {% for store in stores %}
+              <option value="{{ store['storename'] }}">{{ store["storename"] }}</option>
+            {% endfor %}
+          </select>
+        </fieldset>
+      </div>
+      <!-- Brands -->
+      <div class="col-12">
+        <fieldset class="container">
+          <legend class="row">Marcas</legend>
+          <div class="row">
+            <!-- align -->
+            {% for brand_id, brand_name in my_brands.items() %}
+            <div class="col-6">
+              <div class="form-check">
+                <label for="{{ brand_name }}" class="form-check-label">
+                  {% if brand_name == "Guerlain" %}
+                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests" onclick="unhideGuerlain()">
+                  {% else %}
+                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests">
+                  {% endif %}
+                  {{ brand_name.upper() }}
+                </label>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+      <!-- Guerlain Specific -->
+      <div class="col-12" id="guerlainSpecific">
+        <div class="container">
+          <div class="row">
+            <fieldset>
+              <legend>Guerlain</legend>
+            </fieldset>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Abeille Royale" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Abeille Royale</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Orchidée Impériale" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Orchidée Impériale</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Fragancias" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Fragancias</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Maquillaje" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Maquillaje</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Tratamiento" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Tratamiento</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Otro" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Otro</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end Brands -->
+      <!-- Conselours -->
+      <div class="col-12">
+        <fieldset>
+          <legend>Consejera</legend>
+          <select id="consejera" class="form-select" name="CONSEJERA">
+            <option selected>- Seleccione una Opción -</option>
+            {% for advisor in beauty_advisors %}
+              <option value="{{ advisor['fullname'] }}">{{ advisor["fullname"] }}</option>
+            {% endfor %}
+          </select>
+        </fieldset>
+      </div>
+      <!-- end Conselours -->
+      <div class="col-12 m-0 b-0">
+        <fieldset>
+          <legend>Notas</legend>
+          <div class="form-floating">
+            <textarea class="form-control" placeholder="Ingrese notas aquí" name="notes" id="notes" style="height: 100px"></textarea>
+            <label for="notes">Comentarios</label>
+          </div>
+        </fieldset>
+      </div>
+      <br><br>
+      <!-- Submit button -->
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary" onclick="notifyMe()">Registrar Cliente</button>
+      </div>
+      <!-- end Submit button -->
+    </form>
+  </div>
+  <br><br>
+{% endblock content %}
