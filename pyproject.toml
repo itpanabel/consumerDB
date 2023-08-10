@@ -9,6 +9,7 @@ authors = [
 dependencies = [
     "flask",
     "mailchimp-marketing",
+    "python-dotenv",
 ]
 
 [build-system]

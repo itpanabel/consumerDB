@@ -3,9 +3,18 @@ from mailchimp_marketing.api_client import ApiClientError
 from datetime import datetime
 import json
 
+from dotenv import load_dotenv
+from pathlib import Path
+import os
+
+#
+# Load API Keys
+#
+load_dotenv(Path("secrets.env"))
+API_KEY = os.getenv("API_KEY")
+SERVER_PREFIX = os.getenv("SERVER_PREFIX")
+
 # Global Variables - TEMP
-API_KEY = "5bbae6a045509bde36148de97a935596-us21"
-SERVER_PREFIX = "us21"
 LIST_ID_PA = "4b890a1b03" # Country - Audience - Panamá
 LIST_ID_CO = "" # Country - Audience - Colombia
 LIST_ID_CR = "" # Country - Audience - Costa Rica
@@ -78,12 +87,3 @@ def get_brands(list_id:str, group_id:str):
     return brands
   except ApiClientError as error:
     print("Error: {}".format(error.text))
-
-
-# add_customer(LIST_ID_PA, "psyko.killer@mp3.com", "John", "Connor", "61234567", "11/03", "Hombre", "Felix B. Maduro",
-#              "Operador Panabel", "Panamá", "Veraguas", {"c5827d7605": True, "1b03a20f1c": True, "90ffce2501": True, "560c3d832b": True})
-
-
-# Get List of brands
-# my_brands = get_brands(LIST_ID_PA, "383283a2bd")
-# print(json.dumps(my_brands, indent=2))

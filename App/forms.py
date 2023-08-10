@@ -2,9 +2,18 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
+from dotenv import load_dotenv
+from pathlib import Path
 from App.db import get_db
 import json
+import os
 
+#
+# Load API Keys
+#
+load_dotenv(Path(".env"))
+API_KEY = os.getenv("API_KEY")
+SERVER_PREFIX = os.getenv("SERVER_PREFIX")
 
 bp = Blueprint("forms", __name__)
 
@@ -69,13 +78,6 @@ Mailchimp API functions
 import mailchimp_marketing as MailchimpMarketing
 from mailchimp_marketing.api_client import ApiClientError
 from datetime import datetime
-
-# Global Variables - TEMP
-API_KEY = "5bbae6a045509bde36148de97a935596-us21"
-SERVER_PREFIX = "us21"
-#LIST_ID_PA = "4b890a1b03" # Country - Audience - Panamá
-LIST_ID_CO = "" # Country - Audience - Colombia
-LIST_ID_CR = "" # Country - Audience - Costa Rica
 
 
 def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str, bday:str,
