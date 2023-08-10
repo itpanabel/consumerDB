@@ -1,14 +1,19 @@
 import os
 from flask import Flask, render_template
+from dotenv import load_dotenv
+from pathlib import Path
 
-from . import forms
-
+#
+# LOAD SECRETS
+#
+load_dotenv(Path(".env"))
+APP_SECRET_KEY = os.getenv("SECRET_KEY")
 
 def create_app(test_config=None):
     # Create and configure the App
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY="UGFuYWJlbElUMjAyMyE=",
+        SECRET_KEY=APP_SECRET_KEY,
         DATABASE=os.path.join(app.instance_path, "App.sqlite")
     )
 
@@ -24,17 +29,12 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    #temp index
-    @app.route("/test")
-    def index():
-        return render_template("base.html")
-
     # DB
     from . import db
     db.init_app(app)
 
     # Register All Blueprint
-    from . import auth, entity, stores, beautyadvisors
+    from . import auth, entity, stores, beautyadvisors, forms
     app.register_blueprint(auth.bp)
     app.register_blueprint(entity.bp)
     app.register_blueprint(stores.bp)
