@@ -121,10 +121,14 @@ def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str
       "marketing_permissions": [],
       "tags": []
       })
-    print("\n", json.dumps(response, indent=2))
+    # print("\n", json.dumps(response, indent=2))
 
   except ApiClientError as error:
-    print("Error: {}".format(error.text))
+    error_json = json.loads(error.text)
+    log = open("error.log", "+a")
+    log.write(f"{now} - {email}: {json.dumps(error_json)}\n")
+    log.close()
+    print(f"{email}:\n{json.dumps(error_json, indent=2)}")
 
 
 def get_brands(list_id:str, group_id:str):
