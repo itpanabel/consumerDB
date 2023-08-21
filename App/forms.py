@@ -15,6 +15,14 @@ load_dotenv(Path(".env"))
 API_KEY = os.getenv("API_KEY")
 SERVER_PREFIX = os.getenv("SERVER_PREFIX")
 
+# Global Variables - TEMP
+LIST_ID_PA = "4b890a1b03" # Country - Audience - Panamá
+LIST_ID_CO = "cae142989c" # Country - Audience - Colombia
+LIST_ID_CR = "061656a504" # Country - Audience - Costa Rica
+GROUP_ID_PA = "383283a2bd" # group ID of interests - Panama
+GROUP_ID_CO = "cb260f02fa" # group ID of interests - Panama
+GROUP_ID_CR = "" # group ID of interests - Panama
+
 bp = Blueprint("forms", __name__)
 
 @bp.route("/")
@@ -26,9 +34,7 @@ def index():
 @bp.route("/panama", methods=("GET", "POST"))
 def panama():
     """Transacctional Data for Customers"""
-    LIST_ID_PA = "4b890a1b03" # Country - Audience - Panamá
-    my_brands = get_brands(LIST_ID_PA, "383283a2bd")
-    # print(json.dumps(my_brands, indent=2))
+    my_brands = get_brands(LIST_ID_PA, GROUP_ID_PA)
     db = get_db()
     beauty_advisors = db.execute(
         "SELECT fullname FROM CONSEJERAS WHERE subsidiaryid = '1'"
@@ -71,6 +77,50 @@ def panama():
     return render_template("forms/panama.html", my_brands=my_brands, beauty_advisors=beauty_advisors, stores=stores)
 
 
+@bp.route("/colombia", methods=("GET", "POST"))
+def colombia():
+    """Transacctional Data for Customers"""
+    my_brands = get_brands(LIST_ID_CO, GROUP_ID_CO)
+    db = get_db()
+    beauty_advisors = db.execute(
+        "SELECT fullname FROM CONSEJERAS WHERE subsidiaryid = '2'"
+    ).fetchall()
+    stores = db.execute(
+        "SELECT storename FROM TIENDAS WHERE subsidiaryid = '2'"
+    ).fetchall()
+    error = None
+
+    if request.method == "POST":
+      email_address = request.form["email_address"]
+      first_name = request.form["NOMBRE"]
+      last_name = request.form["APELLIDO"]
+      phone = request.form["TEL"]
+      birth_day = request.form["BDAY"]
+      gender = request.form["GENERO"]
+      country = request.form["PAIS"]
+      state = request.form["provincia"]
+      store = request.form["TIENDA"]
+      form_interests = request.form.getlist("interests")
+      interests = {}
+      guerlain_specific = ";".join(request.form.getlist("guerlain-specific"))
+      advisor = request.form["CONSEJERA"]
+      notas = request.form["notes"]
+      if birth_day != "":
+        tmp = birth_day.split("-")
+        birth_day = f"{tmp[1]}/{tmp[2]}"
+      for interest in form_interests:
+        interests[interest] = True
+
+      #
+      # Add customer data to Mailchimp
+      #
+      if email_address != "":
+        add_customer(LIST_ID_CO, email_address, first_name, last_name,
+                     phone, birth_day, gender, store, advisor, country,
+                     state, interests, guerlain_specific, notas)
+
+
+    return render_template("forms/colombia.html", my_brands=my_brands, beauty_advisors=beauty_advisors, stores=stores)
 
 """
 Mailchimp API functions

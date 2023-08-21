@@ -88,8 +88,10 @@
             <div class="col-6">
               <div class="form-check">
                 <label for="{{ brand_name }}" class="form-check-label">
-                  {% if brand_name == "Guerlain" %}
-                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests" onclick="unhideGuerlain()">
+                  {% if ((brand_name == "Guerlain") or (brand_name == "Sisley") or (brand_name == "Payot") or (brand_name == "Phyto")) %}
+                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests" onclick="unhideBrandSpecific('{{brand_name.lower()}}')">
+                  {% elif brand_name == "Acqua di Parma" %}
+                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests" onclick="unhideBrandSpecific('adp')">
                   {% else %}
                     <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests">
                   {% endif %}
@@ -110,19 +112,9 @@
             </fieldset>
             <div class="col-6">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Abeille Royale" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">Abeille Royale</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Orchidée Impériale" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">Orchidée Impériale</label>
-              </div>
-              <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Fragancias" id="flexCheckDefault">
                 <label class="form-check-label" for="flexCheckDefault">Fragancias</label>
               </div>
-            </div>
-            <div class="col-6">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Maquillaje" id="flexCheckDefault">
                 <label class="form-check-label" for="flexCheckDefault">Maquillaje</label>
@@ -131,9 +123,113 @@
                 <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Tratamiento" id="flexCheckDefault">
                 <label class="form-check-label" for="flexCheckDefault">Tratamiento</label>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Sisley Specific -->
+      <div class="col-12" id="sisleySpecific">
+        <div class="container">
+          <div class="row">
+            <fieldset>
+              <legend>Sisley</legend>
+            </fieldset>
+            <div class="col-6">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Otro" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">Otro</label>
+                <input class="form-check-input" type="checkbox" name="sisley-specific" value="Fragancias" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Fragancias</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="sisley-specific" value="Maquillaje" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Maquillaje</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="sisley-specific" value="Tratamiento" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Tratamiento</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="sisley-specific" value="Hair Rituel" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Hair Rituel</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Acqua di Parma -->
+      <div class="col-12" id="adpSpecific">
+        <div class="container">
+          <div class="row">
+            <fieldset>
+              <legend>Acqua di Parma</legend>
+            </fieldset>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="adp-specific" value="Fragancias" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Fragancias</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="adp-specific" value="Barbiere" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Barbiere</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="adp-specific" value="Home" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Home</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Payot -->
+      <div class="col-12" id="payotSpecific">
+        <div class="container">
+          <div class="row">
+            <fieldset>
+              <legend>Payot</legend>
+            </fieldset>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="payot-specific" value="Piel Normal" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Piel Normal</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="payot-specific" value="Piel Mixta" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Piel Mixta</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="payot-specific" value="Piel Grasa" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Piel Grasa</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="payot-specific" value="Piel Seca" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Piel Seca</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Phyto -->
+      <div class="col-12" id="phytoSpecific">
+        <div class="container">
+          <div class="row">
+            <fieldset>
+              <legend>Phyto</legend>
+            </fieldset>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="phyto-specific" value="Anti Caída" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Anti Caída</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="phyto-specific" value="Color" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Color</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="phyto-specific" value="Nutrición y Reparación" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Nutrición y Reparación</label>
               </div>
             </div>
           </div>

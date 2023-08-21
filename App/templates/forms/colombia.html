@@ -1,0 +1,288 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="container">
+    <h1>{% block title %}Base de datos Clientes{% endblock title %}</h1>
+  </div>
+{% endblock header %}
+
+{% block content %}
+  <div class="container">
+    <!-- General Data -->
+    <form class="row g-3" method="post">
+      <div class="col-md-6">
+        <label for="fname" class="form-label" >Nombre</label>
+        <input type="text" class="form-control" id="fname" name="NOMBRE">
+      </div>
+      <div class="col-md-6">
+        <label for="lname" class="form-label">Apellido</label>
+        <input type="text" class="form-control" id="lname" name="APELLIDO">
+      </div>
+      <div class="col-md-6">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control email-autocomplete" id="email" name="email_address">
+      </div>
+      <div class="col-md-6">
+        <label for="phone" class="form-label">Teléfono</label>
+        <input type="tel" class="form-control" id="phone" name="TEL" placeholder="####-####">
+      </div>
+      <div class="col-md-6">
+        <label for="birthday" class="form-label">Cumpleaños</label>
+        <input type="date" class="form-control" id="birthday" name="BDAY">
+      </div>
+      <div class="col-md-6">
+        <label for="gender" class="form-label">Genero</label>
+        <select id="gender" class="form-select" name="GENERO">
+          <option selected value="">- Seleccione una Opción -</option>
+          <option value="Mujer">Femenino</option>
+          <option value="Hombre">Masculino</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+      <!-- Country -->
+      <div class="col-md-6">
+        <label for="country" class="form-label" id="country-label">País de Residencia</label>
+        <input type="text" class="form-control" id="country" name="PAIS">
+        <input type="hidden" class="form-control" id="country_code" >
+      </div>
+      <div class="col-md-6">
+        <label for="provincia" class="form-label">Departamento</label>
+        <select name="provincia" id="provincia" class="form-select">
+          <option selected value="">- Seleccione una Opción -</option>
+          <option value="Amazonas">Amazonas</option>
+          <option value="Antioquia">Antioquia</option>
+          <option value="Arauca">Arauca</option>
+          <option value="Atlántico">Atlántico</option>
+          <option value="Bogotá">Bogotá</option>
+          <option value="Bolívar">Bolívar</option>
+          <option value="Boyacá">Boyacá</option>
+          <option value="Caldas">Caldas</option>
+          <option value="Caquetá">Caquetá</option>
+          <option value="Casanare">Casanare</option>
+          <option value="Cauca">Cauca</option>
+          <option value="Cesar">Cesar</option>
+          <option value="Chocó">Chocó</option>
+          <option value="Córdoba">Córdoba</option>
+          <option value="Cundinamarca">Cundinamarca</option>
+          <option value="Guainía">Guainía</option>
+          <option value="Guaviare">Guaviare</option>
+          <option value="Huila">Huila</option>
+          <option value="La Guajira">La Guajira</option>
+          <option value="Magdalena">Magdalena</option>
+          <option value="Meta">Meta</option>
+          <option value="Nariño">Nariño</option>
+          <option value="Norte de Santander">Norte de Santander</option>
+          <option value="Putumayo">Putumayo</option>
+          <option value="Quindío">Quindío</option>
+          <option value="Risaralda">Risaralda</option>
+          <option value="San Andrés y Providencia">San Andrés y Providencia</option>
+          <option value="Santander">Santander</option>
+          <option value="Sucre">Sucre</option>
+          <option value="Tolima">Tolima</option>
+          <option value="Valle del Cauca">Valle del Cauca</option>
+          <option value="Vaupés">Vaupés</option>
+          <option value="Vichada">Vichada</option>
+        </select>
+      </div>
+      <!-- Stores -->
+      <div class="col-12">
+        <fieldset>
+          <legend>Tienda</legend>
+          <select id="punto-de-venta" class="form-select" name="TIENDA">
+            <option selected value="">- Seleccione una Opción -</option>
+            {% for store in stores %}
+              <option value="{{ store['storename'] }}">{{ store["storename"] }}</option>
+            {% endfor %}
+          </select>
+        </fieldset>
+      </div>
+      <!-- Brands -->
+      <div class="col-12">
+        <fieldset class="container">
+          <legend class="row">Marcas</legend>
+          <div class="row">
+            <!-- align -->
+            {% for brand_id, brand_name in my_brands.items() %}
+            <div class="col-6">
+              <div class="form-check">
+                <label for="{{ brand_name }}" class="form-check-label">
+                  {% if ((brand_name == "Guerlain") or (brand_name == "Sisley") or (brand_name == "Payot") or (brand_name == "Phyto")) %}
+                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests" onclick="unhideBrandSpecific('{{brand_name.lower()}}')">
+                  {% elif brand_name == "Acqua di Parma" %}
+                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests" onclick="unhideBrandSpecific('adp')">
+                  {% else %}
+                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests">
+                  {% endif %}
+                  {{ brand_name.upper() }}
+                </label>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+      <!-- Guerlain Specific -->
+      <div class="col-12" id="guerlainSpecific">
+        <div class="container">
+          <div class="row">
+            <fieldset>
+              <legend>Guerlain</legend>
+            </fieldset>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Fragancias" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Fragancias</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Maquillaje" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Maquillaje</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="guerlain-specific" value="Tratamiento" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Tratamiento</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Sisley Specific -->
+      <div class="col-12" id="sisleySpecific">
+        <div class="container">
+          <div class="row">
+            <fieldset>
+              <legend>Sisley</legend>
+            </fieldset>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="sisley-specific" value="Fragancias" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Fragancias</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="sisley-specific" value="Maquillaje" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Maquillaje</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="sisley-specific" value="Tratamiento" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Tratamiento</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="sisley-specific" value="Hair Rituel" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Hair Rituel</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Acqua di Parma -->
+      <div class="col-12" id="adpSpecific">
+        <div class="container">
+          <div class="row">
+            <fieldset>
+              <legend>Acqua di Parma</legend>
+            </fieldset>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="adp-specific" value="Fragancias" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Fragancias</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="adp-specific" value="Barbiere" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Barbiere</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="adp-specific" value="Home" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Home</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Payot -->
+      <div class="col-12" id="payotSpecific">
+        <div class="container">
+          <div class="row">
+            <fieldset>
+              <legend>Payot</legend>
+            </fieldset>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="payot-specific" value="Piel Normal" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Piel Normal</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="payot-specific" value="Piel Mixta" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Piel Mixta</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="payot-specific" value="Piel Grasa" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Piel Grasa</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="payot-specific" value="Piel Seca" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Piel Seca</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Phyto -->
+      <div class="col-12" id="phytoSpecific">
+        <div class="container">
+          <div class="row">
+            <fieldset>
+              <legend>Phyto</legend>
+            </fieldset>
+            <div class="col-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="phyto-specific" value="Anti Caída" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Anti Caída</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="phyto-specific" value="Color" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Color</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="phyto-specific" value="Nutrición y Reparación" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">Nutrición y Reparación</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end Brands -->
+      <!-- Conselours -->
+      <div class="col-12">
+        <fieldset>
+          <legend>Consejera</legend>
+          <select id="consejera" class="form-select" name="CONSEJERA">
+            <option selected>- Seleccione una Opción -</option>
+            {% for advisor in beauty_advisors %}
+              <option value="{{ advisor['fullname'] }}">{{ advisor["fullname"] }}</option>
+            {% endfor %}
+          </select>
+        </fieldset>
+      </div>
+      <!-- end Conselours -->
+      <div class="col-12 m-0 b-0">
+        <fieldset>
+          <legend>Notas</legend>
+          <div class="form-floating">
+            <textarea class="form-control" placeholder="Ingrese notas aquí" name="notes" id="notes" style="height: 100px"></textarea>
+            <label for="notes">Comentarios</label>
+          </div>
+        </fieldset>
+      </div>
+      <br><br>
+      <!-- Submit button -->
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary" onclick="notifyMe()">Registrar Cliente</button>
+      </div>
+      <!-- end Submit button -->
+    </form>
+  </div>
+  <br><br>
+{% endblock content %}
