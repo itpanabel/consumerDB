@@ -46,9 +46,9 @@ fetch('https://api.ipify.org?format=json')
  * options
  * @returns nothing
  */
-function unhideGuerlain() {
-    let guerlainsection = document.querySelector("#guerlainSpecific");
-    let guerlainCheckboxes = document.getElementsByName("guerlain-specific");
+function unhideBrandSpecific(brand) {
+    let guerlainsection = document.querySelector(`#${brand}Specific`);
+    let guerlainCheckboxes = document.getElementsByName(`${brand}-specific`);
     if (guerlainsection.style.display === "block") {
         guerlainsection.style.display = "none";
         for (i = 0; i < guerlainCheckboxes.length; i++) {
