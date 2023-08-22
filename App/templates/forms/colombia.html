@@ -24,7 +24,7 @@
       </div>
       <div class="col-md-6">
         <label for="phone" class="form-label">Teléfono</label>
-        <input type="tel" class="form-control" id="phone" name="TEL" placeholder="####-####">
+        <input type="tel" class="form-control" id="phone" name="TEL" placeholder="3XX-XXXXXXX">
       </div>
       <div class="col-md-6">
         <label for="birthday" class="form-label">Cumpleaños</label>
@@ -286,3 +286,12 @@
   </div>
   <br><br>
 {% endblock content %}
+
+{% block countrySelection %}
+  <script>
+    $("#country").countrySelect({
+      defaultCountry: "",
+      preferredCountries: ["co", "pa", "cr"]
+    });
+  </script>
+{% endblock countrySelection %}

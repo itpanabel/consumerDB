@@ -57,6 +57,10 @@ def panama():
       form_interests = request.form.getlist("interests")
       interests = {}
       guerlain_specific = ";".join(request.form.getlist("guerlain-specific"))
+      sisley_specific = ";".join(request.form.getlist("sisley-specific"))
+      adp_specific = ";".join(request.form.getlist("adp-specific"))
+      payot_specific = ";".join(request.form.getlist("payot-specific"))
+      phyto_specific = ";".join(request.form.getlist("phyto-specific"))
       advisor = request.form["CONSEJERA"]
       notas = request.form["notes"]
       if birth_day != "":
@@ -71,7 +75,8 @@ def panama():
       if email_address != "":
         add_customer(LIST_ID_PA, email_address, first_name, last_name,
                      phone, birth_day, gender, store, advisor, country,
-                     state, interests, guerlain_specific, notas)
+                     state, interests, guerlain_specific, sisley_specific,
+                     adp_specific, payot_specific, phyto_specific, notas)
 
 
     return render_template("forms/panama.html", my_brands=my_brands, beauty_advisors=beauty_advisors, stores=stores)
@@ -103,6 +108,10 @@ def colombia():
       form_interests = request.form.getlist("interests")
       interests = {}
       guerlain_specific = ";".join(request.form.getlist("guerlain-specific"))
+      sisley_specific = ";".join(request.form.getlist("sisley-specific"))
+      adp_specific = ";".join(request.form.getlist("adp-specific"))
+      payot_specific = ";".join(request.form.getlist("payot-specific"))
+      phyto_specific = ";".join(request.form.getlist("phyto-specific"))
       advisor = request.form["CONSEJERA"]
       notas = request.form["notes"]
       if birth_day != "":
@@ -117,7 +126,8 @@ def colombia():
       if email_address != "":
         add_customer(LIST_ID_CO, email_address, first_name, last_name,
                      phone, birth_day, gender, store, advisor, country,
-                     state, interests, guerlain_specific, notas)
+                     state, interests, guerlain_specific, sisley_specific,
+                     adp_specific, payot_specific, phyto_specific, notas)
 
 
     return render_template("forms/colombia.html", my_brands=my_brands, beauty_advisors=beauty_advisors, stores=stores)
@@ -132,7 +142,8 @@ from datetime import datetime
 
 def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str, bday:str,
                  gender:str, store:str, beauty_advisor:str, country:str,
-                 state:str, brands:dict, guerlain_specific:list, notes:str):
+                 state:str, brands:dict, guerlain_specific:str, sisley_specific:str,
+                 adp_specific:str, payot_specific:str, phyto_specific:str, notes:str):
   """This function create a new customer
   in Mailchimp Platform"""
   try:
@@ -159,9 +170,10 @@ def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str
           "LUGAR": state,
           "NOTAS": notes,
           "GUERLAIN": guerlain_specific,
-          "SISLEY": "",
-          "ADP":"",
-          "PAYOT": ""
+          "SISLEY": sisley_specific,
+          "ADP": adp_specific,
+          "PAYOT": payot_specific,
+          "PHYTO": phyto_specific
 
       },
       "interests": brands,

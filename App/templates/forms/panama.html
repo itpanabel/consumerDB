@@ -268,3 +268,12 @@
   </div>
   <br><br>
 {% endblock content %}
+
+{% block countrySelection %}
+  <script>
+    $("#country").countrySelect({
+      defaultCountry: "",
+      preferredCountries: ["pa", "cr", "co"]
+    });
+  </script>
+{% endblock countrySelection %}

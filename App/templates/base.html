@@ -24,36 +24,57 @@
   <title>{% block title %}{% endblock title %} - Panabel IT</title>
 </head>
 <body>
-  <!-- Navbar -->
-  <div class="container">
+    <!-- Navbar NEW -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
+          <!-- align -->
           <img src="{{ url_for('static', filename='img/logo-panabel.png') }}" alt="Logo Panabel" width="150" height="52.93">
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div class="navbar-nav">
-            <a class="nav-link" href="#">Home</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/">Home</a>
+            </li>
             {% if g.user %}
+            <li class="nav-item">
               <a href="{{ url_for('entity.index') }}" class="nav-link {% if request.endpoint=='entity.index' %}active{% endif %}">Paises</a>
+            </li>
+            <li class="nav-item">
               <a href="{{ url_for('stores.index') }}" class="nav-link {% if request.endpoint=='stores.index' %}active{% endif %}">Tiendas</a>
-              <a href="{{ url_for('beautyadvisors.index') }}" class="nav-link {% if request.endpoint=='beautyadvisors.index' %}active{% endif %}">Consejeras</a>
-              <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user['username'] }} | Log Out</a>
-            {% else %}
-              <a class="nav-link" href="/panama">ConsumerDB-PA</a>
-              <a class="nav-link" href="/colombia">ConsumerDB-CO</a>
-              <a class="nav-link" href="#">ConsumerDB-CR</a>
-              <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
-            {% endif %}
-          </div>
-        </div>
+            </li>
+          <li class="nav-item">
+            <a href="{{ url_for('beautyadvisors.index') }}" class="nav-link {% if request.endpoint=='beautyadvisors.index' %}active{% endif %}">Consejeras</a>
+          </li>
+          {% else %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Customer DB
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/panama">ConsumerDB-PA</a></li>
+              <li><a class="dropdown-item" href="/colombia">ConsumerDB-CO</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">ConsumerDB-CR</a></li>
+            </ul>
+          </li>
+          {% endif %}
+        </ul>
+        {% if g.user %}
+          <form class="d-flex" role="search">
+            <a class="btn btn-outline-danger" role="button" href="{{ url_for('auth.logout') }}">{{ g.user['username'] }} | Log Out</a>
+          </form>
+        {% else %}
+          <form class="d-flex" role="search">
+            <a class="btn btn-outline-success" role="button" href="{{ url_for('auth.login') }}">Log In</a>
+          </form>
+        {% endif %}
       </div>
-    </nav>
-  </div>
-  <!-- End Navbar -->
+    </div>
+  </nav>  <!-- End Navbar NEW -->
   <!-- Content -->
   <div class="container">
     <br><br><br>
@@ -76,11 +97,8 @@
   <!-- Custom Scritps -->
   <script src="{{ url_for('static', filename='scripts/main.js') }}"></script>
   <!-- Country Select JS default Settings -->
-  <script>
-    $("#country").countrySelect({
-      defaultCountry: "",
-      preferredCountries: ["pa", "cr", "co"]
-    });
-  </script>
+  {% block countrySelection %}
+
+  {% endblock countrySelection %}
 </body>
 </html>
