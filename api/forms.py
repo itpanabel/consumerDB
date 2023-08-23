@@ -63,9 +63,9 @@ def panama():
       phyto_specific = ";".join(request.form.getlist("phyto-specific"))
       advisor = request.form["CONSEJERA"]
       notas = request.form["notes"]
-      if birth_day != "":
-        tmp = birth_day.split("-")
-        birth_day = f"{tmp[1]}/{tmp[2]}"
+      if birth_day == "":
+        error = "Se requiere fecha de cumpleaños"
+        flash(error, "alert-danger")
       for interest in form_interests:
         interests[interest] = True
 
@@ -114,12 +114,11 @@ def colombia():
       phyto_specific = ";".join(request.form.getlist("phyto-specific"))
       advisor = request.form["CONSEJERA"]
       notas = request.form["notes"]
-      if birth_day != "":
-        tmp = birth_day.split("-")
-        birth_day = f"{tmp[1]}/{tmp[2]}"
+      if birth_day == "":
+        error = "Se requiere fecha de cumpleaños"
+        flash(error, "alert-danger")
       for interest in form_interests:
         interests[interest] = True
-
       #
       # Add customer data to Mailchimp
       #
@@ -183,6 +182,7 @@ def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str
       "marketing_permissions": [],
       "tags": []
       })
+    flash("El Usuario fue creado éxitosamente", "alert-success")
     # print("\n", json.dumps(response, indent=2))
 
   except ApiClientError as error:
@@ -190,6 +190,7 @@ def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str
     log = open("error.log", "+a")
     log.write(f"{now} - {email}: {json.dumps(error_json)}\n")
     log.close()
+    flash(error.text, "alert-danger")
     print(f"{email}:\n{json.dumps(error_json, indent=2)}")
 
 

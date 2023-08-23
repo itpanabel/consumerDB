@@ -9,7 +9,7 @@
 {% block content %}
   <div class="container">
     <!-- General Data -->
-    <form class="row g-3" method="post">
+    <form class="row g-3" method="post" id="customerData">
       <div class="col-md-6">
         <label for="fname" class="form-label" >Nombre</label>
         <input type="text" class="form-control" id="fname" name="NOMBRE">
@@ -28,7 +28,7 @@
       </div>
       <div class="col-md-6">
         <label for="birthday" class="form-label">Cumpleaños</label>
-        <input type="date" class="form-control" id="birthday" name="BDAY">
+        <input type="text" class="form-control" id="birthday" name="BDAY" placeholder="MM/DD">
       </div>
       <div class="col-md-6">
         <label for="gender" class="form-label">Genero</label>
@@ -63,7 +63,6 @@
           <option value="Comarca Ngäbe-Blugé">Comarca Ngäbe-Blugé</option>
           <option value="Panamá Oeste">Panamá Oeste</option>
           <option value="Frontera">Frontera</option>
-
         </select>
       </div>
       <!-- Stores -->
@@ -261,7 +260,7 @@
       <br><br>
       <!-- Submit button -->
       <div class="col-12">
-        <button type="submit" class="btn btn-primary" onclick="notifyMe()">Registrar Cliente</button>
+        <button type="submit" class="btn btn-primary">Registrar Cliente</button>
       </div>
       <!-- end Submit button -->
     </form>
