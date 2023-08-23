@@ -113,3 +113,19 @@ function notifyMe() {
     // At last, if the user has denied notifications, and you
     // want to be respectful there is no need to bother them anymore.
 };
+
+/**
+ * Setup jqueryui Datepicker for
+ * Month and Day only in specific
+ * format
+ */
+let datePickerDate = new Date();
+
+$(function() {
+  $("#birthday").datepicker({
+    dateFormat: "mm/dd",
+    changeMonth: true,
+    minDate: new Date(datePickerDate.getFullYear(), 0, 1),
+    maxDate: new Date(datePickerDate.getFullYear(), 12, 31)
+  });
+});
