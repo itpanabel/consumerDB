@@ -4,7 +4,7 @@ from flask import (
 from werkzeug.exceptions import abort
 from dotenv import load_dotenv
 from pathlib import Path
-from App.db import get_db
+from api.db import get_db
 import json
 import os
 
