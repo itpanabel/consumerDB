@@ -65,7 +65,7 @@ def create():
             else:
                 return redirect(url_for("entity.index"))
 
-        flash(error)
+        flash(error, "alert-danger")
 
     return render_template("entity/create.html")
 
@@ -85,7 +85,7 @@ def update(id):
             error = "Por favor completar los campos"
 
         if error is not None:
-            flash(error)
+            flash(error, "alert-danger")
         else:
             db = get_db()
             db.execute(

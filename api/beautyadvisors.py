@@ -62,7 +62,7 @@ def create():
             else:
                 return redirect(url_for("beautyadvisors.index"))
 
-        flash(error)
+        flash(error, "alert-danger")
 
     # data for Select Tag
     db = get_db()
@@ -92,7 +92,7 @@ def update(id):
             error = "Por favor llenar campos."
 
         if error is not None:
-            flash(error)
+            flash(error, "alert-danger")
         else:
             db = get_db()
             db.execute(

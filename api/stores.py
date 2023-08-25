@@ -65,7 +65,7 @@ def create():
             else:
                 return redirect(url_for("stores.index"))
 
-        flash(error)
+        flash(error, "alert-danger")
 
     # Get Entities for Select tag
     db = get_db()
@@ -93,7 +93,7 @@ def update(id):
             error = "Por favor llenar los campos"
 
         if error is not None:
-            flash(error)
+            flash(error, "alert-danger")
         else:
             db = get_db()
             db.execute(
