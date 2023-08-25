@@ -12,15 +12,15 @@
     <form class="row g-3" method="post" id="customerData">
       <div class="col-md-6">
         <label for="fname" class="form-label" >Nombre</label>
-        <input type="text" class="form-control" id="fname" name="NOMBRE">
+        <input type="text" class="form-control" id="fname" name="NOMBRE" required>
       </div>
       <div class="col-md-6">
         <label for="lname" class="form-label">Apellido</label>
-        <input type="text" class="form-control" id="lname" name="APELLIDO">
+        <input type="text" class="form-control" id="lname" name="APELLIDO" required>
       </div>
       <div class="col-md-6">
         <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control email-autocomplete" id="email" name="email_address">
+        <input type="email" class="form-control email-autocomplete" id="email" name="email_address" required>
       </div>
       <div class="col-md-6">
         <label for="phone" class="form-label">Teléfono</label>
@@ -69,7 +69,7 @@
       <div class="col-12">
         <fieldset>
           <legend>Tienda</legend>
-          <select id="punto-de-venta" class="form-select" name="TIENDA">
+          <select id="punto-de-venta" class="form-select" name="TIENDA" required>
             <option selected value="">- Seleccione una Opción -</option>
             {% for store in stores %}
               <option value="{{ store['storename'] }}">{{ store["storename"] }}</option>
@@ -78,7 +78,7 @@
         </fieldset>
       </div>
       <!-- Brands -->
-      <div class="col-12">
+      <div class="col-12" id="brands">
         <fieldset class="container">
           <legend class="row">Marcas</legend>
           <div class="row">
@@ -88,11 +88,11 @@
               <div class="form-check">
                 <label for="{{ brand_name }}" class="form-check-label">
                   {% if ((brand_name == "Guerlain") or (brand_name == "Sisley") or (brand_name == "Payot") or (brand_name == "Phyto")) %}
-                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests" onclick="unhideBrandSpecific('{{brand_name.lower()}}')">
+                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests" onclick="unhideBrandSpecific('{{brand_name.lower()}}')" required>
                   {% elif brand_name == "Acqua di Parma" %}
-                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests" onclick="unhideBrandSpecific('adp')">
+                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests" onclick="unhideBrandSpecific('adp')" required>
                   {% else %}
-                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests">
+                    <input type="checkbox" class="form-check-input" id="{{ brand_name }}" value="{{ brand_id }}" name="interests" required>
                   {% endif %}
                   {{ brand_name.upper() }}
                 </label>
@@ -239,8 +239,8 @@
       <div class="col-12">
         <fieldset>
           <legend>Consejera</legend>
-          <select id="consejera" class="form-select" name="CONSEJERA">
-            <option selected>- Seleccione una Opción -</option>
+          <select id="consejera" class="form-select" name="CONSEJERA" required>
+            <option selected value="">- Seleccione una Opción -</option>
             {% for advisor in beauty_advisors %}
               <option value="{{ advisor['fullname'] }}">{{ advisor["fullname"] }}</option>
             {% endfor %}
@@ -273,6 +273,21 @@
     $("#country").countrySelect({
       defaultCountry: "",
       preferredCountries: ["pa", "cr", "co"]
+    });
+
+    /**
+     * Check that at least one
+     * brand is selected
+     */
+    $(function(){
+      var requiredCheckboxes = $('#brands :checkbox[required]');
+      requiredCheckboxes.change(function(){
+          if(requiredCheckboxes.is(':checked')) {
+              requiredCheckboxes.removeAttr('required');
+          } else {
+              requiredCheckboxes.attr('required', 'required');
+          }
+      });
     });
   </script>
 {% endblock countrySelection %}
