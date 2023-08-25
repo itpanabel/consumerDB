@@ -66,17 +66,21 @@ def panama():
       if birth_day == "":
         error = "Se requiere fecha de cumpleaños"
         flash(error, "alert-danger")
-      for interest in form_interests:
-        interests[interest] = True
+      if not form_interests:
+        error = "Se requiere al menos una marca"
+        flash(error, "alert-warning")
+      else:
+        for interest in form_interests:
+          interests[interest] = True
 
-      #
-      # Add customer data to Mailchimp
-      #
-      if email_address != "":
-        add_customer(LIST_ID_PA, email_address, first_name, last_name,
-                     phone, birth_day, gender, store, advisor, country,
-                     state, interests, guerlain_specific, sisley_specific,
-                     adp_specific, payot_specific, phyto_specific, notas)
+        #
+        # Add customer data to Mailchimp
+        #
+        if email_address != "":
+          add_customer(LIST_ID_PA, email_address, first_name, last_name,
+                      phone, birth_day, gender, store, advisor, country,
+                      state, interests, guerlain_specific, sisley_specific,
+                      adp_specific, payot_specific, phyto_specific, notas)
 
 
     return render_template("forms/panama.html", my_brands=my_brands, beauty_advisors=beauty_advisors, stores=stores)
@@ -117,16 +121,22 @@ def colombia():
       if birth_day == "":
         error = "Se requiere fecha de cumpleaños"
         flash(error, "alert-danger")
-      for interest in form_interests:
-        interests[interest] = True
-      #
-      # Add customer data to Mailchimp
-      #
-      if email_address != "":
-        add_customer(LIST_ID_CO, email_address, first_name, last_name,
-                     phone, birth_day, gender, store, advisor, country,
-                     state, interests, guerlain_specific, sisley_specific,
-                     adp_specific, payot_specific, phyto_specific, notas)
+      if not form_interests:
+        error = "Se requiere al menos una marca"
+        flash(error, "alert-warning")
+      else:
+        for interest in form_interests:
+          interests[interest] = True
+
+        #
+        # Add customer data to Mailchimp
+        #
+        if email_address != "":
+          add_customer(LIST_ID_PA, email_address, first_name, last_name,
+                      phone, birth_day, gender, store, advisor, country,
+                      state, interests, guerlain_specific, sisley_specific,
+                      adp_specific, payot_specific, phyto_specific, notas)
+
 
 
     return render_template("forms/colombia.html", my_brands=my_brands, beauty_advisors=beauty_advisors, stores=stores)
