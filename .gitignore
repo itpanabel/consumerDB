@@ -14,4 +14,4 @@ build/
 *~
 .env
 .log
-api/uploads/*
+uploads/*
