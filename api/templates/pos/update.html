@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Actualizar POS{% endblock title %}</h1>
+{% endblock header %}
+
+{% block content %}
+  <form method="post" class="row g-3">
+    <div class="col-md-6">
+      <label for="pos" class="form-label">POS</label>
+      <input type="text" class="form-control" id="pos" name="pos" value="{{ request.form['pos'] or pos['pos_name'] }}" required>
+    </div>
+    <div class="col-md-6">
+      <label for="entity" class="form-label">País</label>
+      <select name="entity" id="entity" class="form-select">
+        {% for entity in entities %}
+          {% if pos["subsidiaryid"] == entity["id"] %}
+            <option value="{{ pos['subsidiaryid'] }}" selected>{{ entity["entityname"] }}</option>
+          {% else %}
+            <option value="{{ entity['id'] }}">{{ entity["entityname"] }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto">
+      <input type="submit" value="Actualizar" class="btn btn-primary btn-lg">
+      <a href="{{ url_for('pos.index') }}" class="btn btn-danger btn-lg">Cancelar</a>
+    </div>
+  </form>
+{% endblock content %}

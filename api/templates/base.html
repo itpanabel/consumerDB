@@ -51,6 +51,12 @@
           <li class="nav-item">
             <a href="{{ url_for('beautyadvisors.index') }}" class="nav-link {% if request.endpoint=='beautyadvisors.index' %}active{% endif %}">Consejeras</a>
           </li>
+          <li class="nav-item">
+            <a href="{{ url_for('pos.index') }}" class="nav-link {% if request.endpoint=='pos.index' %}active{% endif %}">POS</a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('testers.index') }}" class="nav-link {% if request.endpoint=='testers.index' %}active{% endif %}">Testers</a>
+          </li>
           {% else %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -61,6 +67,16 @@
               <li><a class="dropdown-item" href="/colombia">ConsumerDB-CO</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="#">ConsumerDB-CR</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Solicitudes
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Solicitar Testers</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Solicitar Vacaciones</a></li>
             </ul>
           </li>
           {% endif %}
@@ -85,6 +101,7 @@
 
     {% endblock header %}
     <!-- Flashed Messages -->
+    <br>
     {% with messages = get_flashed_messages(with_categories=True) %}
       {% if messages %}
         {% for category, message in messages %}

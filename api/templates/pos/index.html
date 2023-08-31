@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}POS{% endblock title %}</h1>
+  {% if g.user %}
+    <a href="{{ url_for('pos.create') }}" class="btn btn-success">Nueva POS</a>
+  {% endif %}
+{% endblock header %}
+
+{% block content %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">POS</th>
+        <th scope="col" colspan="3">País</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for po in pos %}
+        <tr>
+          <th scope="row">{{ loop.index }}</th>
+          <td>{{ po["pos_name"] }}</td>
+          <td>{{ po["entityname"] }}</td>
+          {% if g.user %}
+          <td><a href="{{ url_for('pos.update', id=po['id']) }}" class="text-primary"><i class="fa-regular fa-pen-to-square"></i></a></td>
+          <td><a href="{{ url_for('pos.delete', id=po['id']) }}" class="text-danger"><i class="fa-regular fa-trash-can"></i></a></td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock content %}

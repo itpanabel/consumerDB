@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Testers{% endblock title %}</h1>
+  {% if g.user %}
+    <a href="{{ url_for('testers.create') }}" class="btn btn-success">Nuevo Tester</a>
+    <a href="{{ url_for('testers.import_testers') }}" class="btn btn-success">Importar Testers</a>
+  {% endif %}
+  <br>
+{% endblock header %}
+
+{% block content %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Referencia</th>
+        <th scope="col">Marca</th>
+        <th scope="col">Eje</th>
+        <th scope="col">Descripción</th>
+        <th scope="col" colspan="3">País</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tester in testers %}
+        <tr>
+          <th scope="row">{{ loop.index }}</th>
+          <td>{{ tester["testercode"] }}</td>
+          <td>{{ tester["tester_brand"] }}</td>
+          <td>{{ tester["tester_axe"] }}</td>
+          <td>{{ tester["tester_name"] }}</td>
+          <td>{{ tester["entityname"] }}</td>
+          {% if g.user %}
+          <td><a href="{{ url_for('testers.update', id=tester['testercode']) }}" class="text-primary"><i class="fa-regular fa-pen-to-square"></i></a></td>
+          <td><a href="{{ url_for('testers.delete', id=tester['testercode']) }}" class="text-danger"><i class="fa-regular fa-trash-can"></i></a></td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock content %}

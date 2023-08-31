@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Crear Tester{% endblock title %}</h1>
+{% endblock header %}
+
+{% block content %}
+  <form method="post" class="row g-3">
+    <div class="col-md-6">
+      <label for="testercode" class="form-label">Referencia</label>
+      <input type="text" class="form-control" id="testercode" name="testercode" required>
+    </div>
+    <div class="col-md-6">
+      <label for="testername" class="form-label">Descripción</label>
+      <input type="text" class="form-control" id="testername" name="testername" required>
+    </div>
+    <div class="col-md-6">
+      <label for="testerbrand" class="form-label">Marca</label>
+      <input type="text" class="form-control" id="testerbrand" name="testerbrand" required>
+    </div>
+    <div class="col-md-6">
+      <label for="testeraxe" class="form-label">Eje</label>
+      <input type="text" class="form-control" id="testeraxe" name="testeraxe" required>
+    </div>
+    <div class="col-md-12">
+      <label for="entity" class="form-label">País</label>
+      <select name="entity" id="entity" class="form-select">
+        <option value="" selected>--Seleccione País--</option>
+        {% for entity in entities %}
+          <option value="{{ entity['id'] }}">{{ entity["entityname"] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto">
+      <input type="submit" value="Crear" class="btn btn-primary btn-lg">
+      <a href="{{ url_for('testers.index') }}" class="btn btn-danger btn-lg">Cancelar</a>
+    </div>
+  </form>
+{% endblock content %}
