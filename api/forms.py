@@ -45,7 +45,7 @@ def testers_request():
   current_date = datetime.now()
   start_date = datetime(current_date.year, current_date.month, 10)
 
-  if start_date.day < current_date.day:
+  if current_date.day <= start_date.day:
     if request.method == "POST":
       pdv = request.form["pos"]
       advisor = request.form["consejera"]
