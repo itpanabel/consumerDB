@@ -131,7 +131,7 @@ def import_testers():
     return render_template("testers/import_testers.html")
 
 
-@bp.route("<id>/update", methods=("GET", "POST"))
+@bp.route("<string:id>/update", methods=("GET", "POST"))
 @login_required
 def update(id):
     """Update data for a tester"""
@@ -154,7 +154,7 @@ def update(id):
             db = get_db()
             db.execute(
                 "UPDATE TESTERS SET testercode = ?, tester_name = ?, tester_brand = ?, tester_axe = ?, subsidiaryid = ? "
-                "WHERE id = ?", (tester_code, tester_name, tester_brand, tester_axe, entity, id)
+                "WHERE testercode = ?", (tester_code, tester_name, tester_brand, tester_axe, entity, id)
             )
             db.commit()
             return redirect(url_for("testers.index"))
