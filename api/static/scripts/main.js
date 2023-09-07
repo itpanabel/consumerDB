@@ -129,3 +129,29 @@ $(function() {
     maxDate: new Date(datePickerDate.getFullYear(), 12, 31)
   });
 });
+
+
+/**
+ * This function will filter data for
+ * testers table
+ */
+function filterData() {
+  let input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("filter");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("testersTable");
+  tr = table.getElementsByTagName("tr");
+
+  // loop for all data and hide not matching data
+  for (i=0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      textValue = td.textContent || td.innerText;
+      if (textValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}

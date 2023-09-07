@@ -1,10 +1,12 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
 )
 from werkzeug.exceptions import abort
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from pathlib import Path
 from api.db import get_db
+import _sqlite3
 import json
 import os
 
@@ -23,12 +25,52 @@ GROUP_ID_PA = "383283a2bd" # group ID of interests - Panama
 GROUP_ID_CO = "cb260f02fa" # group ID of interests - Panama
 GROUP_ID_CR = "" # group ID of interests - Panama
 
+
 bp = Blueprint("forms", __name__)
+
 
 @bp.route("/")
 def index():
     """Show home page for Customer DB"""
     return render_template("forms/index.html")
+
+
+@bp.route("/testers-request", methods=("GET", "POST"))
+def testers_request():
+  db = get_db()
+  data = db.execute("SELECT * FROM TESTERS").fetchall()
+  brands = db.execute("SELECT DISTINCT tester_brand FROM TESTERS").fetchall()
+  beauty_advisors = db.execute("SELECT id, fullname FROM CONSEJERAS WHERE subsidiaryid = '1'")
+  pos = db.execute("SELECT id, pos_name FROM POS WHERE subsidiaryid = '1'")
+  current_date = datetime.now()
+  start_date = datetime(current_date.year, current_date.month, 5)
+
+  if start_date.day < current_date.day:
+    if request.method == "POST":
+      pdv = request.form["pos"]
+      advisor = request.form["consejera"]
+      itemCode = request.form.getlist("itemcode")
+      orderedDate = datetime.now()
+      try:
+        for item in itemCode:
+          db.execute(
+            "INSERT INTO ORDEREDTESTERS (itemcode, orderdate, requester, orderpos) VALUES (?, ?, ?, ?)",
+            (item, orderedDate, advisor, pdv)
+          )
+          db.commit()
+          print(f"POS: {pdv}, consejera: {advisor} Articulos Solicitados: {item}, solicitado: {orderedDate.strftime('%Y-%m-%d %H:%M:%S.%f')}")
+        flash("Se envió su pedido exitosamente!", "alert-success")
+      except db.IntegrityError:
+        flash("Por favor contactar a soporte", "alert-warning")
+
+    return render_template("forms/trequest.html", testers=data, brands=brands, beauty_advisors=beauty_advisors, pos=pos)
+
+  return render_template("forms/bloqueado.html")
+  # my_json = {"data": []}
+  # for row in data:
+  #   my_json["data"].append(dict(row))
+  # return json.dumps(my_json, indent=2)
+  # return json.dumps([dict(record) for record in data], indent=2)
 
 
 @bp.route("/panama", methods=("GET", "POST"))
@@ -224,3 +266,14 @@ def get_brands(list_id:str, group_id:str):
     return brands
   except ApiClientError as error:
     print("Error: {}".format(error.text))
+
+
+
+def lastday_of_month(mydate:datetime):
+  """Find the last day of a month
+  Parameters:
+    @mydate(datetime)
+  Returns: datetime"""
+  next_month = mydate.replace(day=28) + timedelta(days=4)
+  res = next_month - timedelta(days=next_month.day)
+  return res

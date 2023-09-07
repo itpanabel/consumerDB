@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Solicitar Testers{% endblock title %}</h1>
+{% endblock header %}
+
+{% block content %}
+<form method="post">
+  <div class="mb-3">
+    <label for="pos" class="form-label">Punto de Venta</label>
+    <select name="pos" id="pos" class="form-select">
+      <option value="" selected>Seleccione Punto de Venta</option>
+      {% for store in pos %}
+        <option value="{{ store['id'] }}">{{ store["pos_name"] }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="consejera" class="form-label">Consejera</label>
+    <select name="consejera" id="consejera" class="form-select">
+      <option value="" selected>Seleccione Solicitante</option>
+      {% for advisor in beauty_advisors %}
+        <option value="{{ advisor['fullname'] }}">{{ advisor["fullname"] }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="filter" class="form-label">Filtar Marca</label>
+    <select name="filter" id="filter" class="form-select" onchange="filterData()">
+      <option value="" selected>Seleccione una marca</option>
+      {% for brand in brands %}
+        <option value="{{ brand['tester_brand'] }}">{{ brand['tester_brand'] }}</option>
+      {% endfor %}
+    </select>
+  </div>
+    <table class="table table-responsive table-striped" id="testersTable">
+      <thead>
+        <tr>
+          <th scope="col" class="text-center">Order</th>
+          <th scope="col">Marca</th>
+          <th scope="col">Eje</th>
+          <th scope="col">Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for tester in testers %}
+          <tr>
+            <td><input class="form-check-input" type="checkbox" name="itemcode" value="{{ tester['testercode'] }}"></td>
+            <td>{{ tester["tester_brand"] }}</td>
+            <td>{{ tester["tester_axe"] }}</td>
+            <td>{{ tester["tester_name"] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Hacer Pedidos</button>
+  </form>
+{% endblock content %}

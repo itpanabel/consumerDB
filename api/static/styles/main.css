@@ -21,3 +21,11 @@
   #guerlainSpecific, #sisleySpecific, #adpSpecific, #payotSpecific, #phytoSpecific {
     display: none;
   }
+
+  #testersTable {
+    font-size: 0.7rem;
+  }
+
+  @media only screen and (min-width: 32.5rem) {
+    #testersTable { font-size: 1rem; }
+  }
