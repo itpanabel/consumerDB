@@ -59,16 +59,10 @@ def testers_request():
           )
           db.commit()
           print(f"POS: {pdv}, consejera: {advisor} Articulos Solicitados: {item}, solicitado: {orderedDate.strftime('%Y-%m-%d %H:%M:%S.%f')}")
-<<<<<<< HEAD
         flash("Se envió su pedido exitosamente!", "alert-success")
       except db.IntegrityError:
         flash("Por favor contactar a soporte", "alert-warning")
 
-=======
-      except db.IntegrityError:
-        flash("Por favor contactar a soporte", "alert-warning")
-
->>>>>>>>> Temporary merge branch 2
     return render_template("forms/trequest.html", testers=data, brands=brands, beauty_advisors=beauty_advisors, pos=pos)
 
   return render_template("forms/bloqueado.html")
