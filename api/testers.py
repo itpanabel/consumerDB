@@ -82,8 +82,10 @@ def create():
         "FROM SUBSIDIARIES "
         "ORDER BY id"
     ).fetchall()
+    brands = db.execute("SELECT DISTINCT tester_brand FROM TESTERS").fetchall()
+    axes = db.execute("SELECT DISTINCT tester_axe FROM TESTERS").fetchall()
 
-    return render_template("testers/create.html", entities=entities)
+    return render_template("testers/create.html", entities=entities, brands=brands, axes=axes)
 
 
 @bp.route("/import_testers", methods=("GET", "POST"))
@@ -164,7 +166,10 @@ def update(id):
         "FROM SUBSIDIARIES "
         "ORDER BY id"
     ).fetchall()
-    return render_template("testers/update.html", tester=tester, entities=entities)
+    brands = db.execute("SELECT DISTINCT tester_brand FROM TESTERS").fetchall()
+    axes = db.execute("SELECT DISTINCT tester_axe FROM TESTERS").fetchall()
+
+    return render_template("testers/update.html", tester=tester, entities=entities, brands=brands, axes=axes)
 
 
 

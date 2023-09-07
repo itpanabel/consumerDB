@@ -16,11 +16,27 @@
     </div>
     <div class="col-md-6">
       <label for="testerbrand" class="form-label">Marca</label>
-      <input type="text" class="form-control" id="testerbrand" name="testerbrand" value="{{ request.form['testerbrand'] or tester['tester_brand'] }}" required>
+      <select name="testerbrand" id="testerbrand" class="form-select" required>
+        {% for brand in brands %}
+          {% if tester["tester_brand"] == brand["tester_brand"] %}
+            <option value="{{ tester['tester_brand'] }}" selected>{{ tester["tester_brand"] }}</option>
+          {% else %}
+            <option value="{{ brand['tester_brand'] }}">{{ brand["tester_brand"] }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
     </div>
     <div class="col-md-6">
       <label for="testeraxe" class="form-label">Eje</label>
-      <input type="text" class="form-control" id="testeraxe" name="testeraxe" value="{{ request.form['testeraxe'] or tester['tester_axe'] }}" required>
+      <select name="testeraxe" id="testeraxe" class="form-select" required>
+        {% for axe in axes %}
+          {% if tester["tester_axe"] == axe["tester_axe"] %}
+            <option value="{{ tester['tester_axe'] }}" selected>{{ tester["tester_axe"] }}</option>
+          {% else %}
+            <option value="axe['tester_axe']">{{ axe["tester_axe"] }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
     </div>
     <div class="col-md-12">
       <label for="entity" class="form-label">País</label>
