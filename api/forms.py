@@ -43,7 +43,7 @@ def testers_request():
   beauty_advisors = db.execute("SELECT id, fullname FROM CONSEJERAS WHERE subsidiaryid = '1'")
   pos = db.execute("SELECT id, pos_name FROM POS WHERE subsidiaryid = '1'")
   current_date = datetime.now()
-  start_date = datetime(current_date.year, current_date.month, 5)
+  start_date = datetime(current_date.year, current_date.month, 10)
 
   if start_date.day < current_date.day:
     if request.method == "POST":
