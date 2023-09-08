@@ -182,3 +182,16 @@ def delete(id):
     db.execute("DELETE FROM TESTERS WHERE id = ?", (id,))
     db.commit()
     return redirect(url_for("testers.index"))
+
+
+@bp.route("/export_resquest", methods=("GET", "POST"))
+def export_resquest():
+    """This will render the tester requested
+    for the current month."""
+    db = get_db()
+    data = db.execute(
+        "SELECT T1.pos_name, T0.requester, T0.itemcode, 1 AS 'Qty', Date(T0.orderdate) AS'orderdate' "
+        "FROM ORDEREDTESTERS T0 INNER JOIN POS T1 ON T0.orderpos = T1.id "
+        "WHERE strftime('%m', T0.orderdate) = strftime('%m', 'now')"
+    )
+    return render_template("testers/export_testers.html", data=data)

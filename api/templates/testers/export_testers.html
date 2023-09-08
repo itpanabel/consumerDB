@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Exportar Tester{% endblock title %}</h1>
+{% endblock header %}
+
+{% block content %}
+  <button class="btn btn-outline-primary btn-lg" onclick="tableToCSV()">
+    <i class="fa-solid fa-download"></i> Descargar Pedido
+    de Testers
+  </button>
+  <br /><br />
+  <table class="table table-responsive table-striped" id="testersRequested">
+    <thead>
+      <th scope="col">Punto de Venta</th>
+      <th scope="col">Solicitante</th>
+      <th scope="col">Referencia</th>
+      <th scope="col">Cantidad</th>
+      <th scope="col">Fecha de Solicitud</th>
+    </thead>
+    <tbody>
+      {% for item in data %}
+      <tr>
+        <td>{{ item["pos_name"] }}</td>
+        <td>{{ item["requester"] }}</td>
+        <td>{{ item["itemcode"] }}</td>
+        <td>{{ item["Qty"] }}</td>
+        <td>{{ item["orderdate"] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock content %}
+
+{% block countrySelection %}
+  <script>
+    /**
+     * This fuction will allow the user
+     * to export the table data to a CSV
+     * file.
+     */
+    function tableToCSV() {
+      // Variable to store the final csv data
+      var csv_data = [];
+
+      // Get each row data
+      var rows = document.getElementsByTagName("tr");
+      for (var i = 0; i < rows.length; i++) {
+        // Get each column data
+        var cols = rows[i].querySelectorAll("td,th");
+
+        // Stores each csv row data
+        var csvrow = [];
+        for (var j = 0; j < cols.length; j++) {
+          // Get the text data of each cell of
+          // a row and push it to csvrow
+          csvrow.push(cols[j].innerHTML);
+        }
+
+        // Combine each column value with comma
+        csv_data.push(csvrow.join(","));
+      }
+      // combine each row data with new line character
+      csv_data = csv_data.join("\n");
+
+      /* We will use this function later to download
+      the data in a csv file downloadCSVFile(csv_data);
+      */
+     downloadCSVFile(csv_data);
+    }
+
+    /**
+     * This function will allow the user
+     * to download the data in CSV file
+     * This will call the function before.
+     */
+    function downloadCSVFile(csv_data) {
+      // Create CSV file object and feed our
+      // csv_data into it
+      CSVFile = new Blob([csv_data], { type: "text/csv" });
+
+      // Create to temporary link to initiate
+      // download process
+      var temp_link = document.createElement("a");
+
+      // Download csv file
+      temp_link.download = "solicitud_testers.csv";
+      var url = window.URL.createObjectURL(CSVFile);
+      temp_link.href = url;
+
+      // This link should not be displayed
+      temp_link.style.display = "none";
+      document.body.appendChild(temp_link);
+
+      // Automatically click the link to trigger download
+      temp_link.click();
+      document.body.removeChild(temp_link);
+    }
+  </script>
+{% endblock countrySelection %}
