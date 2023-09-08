@@ -84,7 +84,9 @@
       var temp_link = document.createElement("a");
 
       // Download csv file
-      temp_link.download = "solicitud_testers.csv";
+      const currentDate = new Date();
+      const month = currentDate.toLocaleDateString('default', { month: 'short' });
+      temp_link.download = `solicitud_testers_${month.toLowerCase()}${currentDate.getFullYear()}.csv`;
       var url = window.URL.createObjectURL(CSVFile);
       temp_link.href = url;
 
