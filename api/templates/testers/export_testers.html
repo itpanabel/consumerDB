@@ -15,6 +15,7 @@
       <th scope="col">Punto de Venta</th>
       <th scope="col">Solicitante</th>
       <th scope="col">Referencia</th>
+      <th scope="col">Descripci&oacute;n</th>
       <th scope="col">Cantidad</th>
       <th scope="col">Fecha de Solicitud</th>
     </thead>
@@ -24,6 +25,7 @@
         <td>{{ item["pos_name"] }}</td>
         <td>{{ item["requester"] }}</td>
         <td>{{ item["itemcode"] }}</td>
+        <td>{{ item["tester_name"] }}</td>
         <td>{{ item["Qty"] }}</td>
         <td>{{ item["orderdate"] }}</td>
       </tr>
@@ -57,8 +59,8 @@
           csvrow.push(cols[j].innerHTML);
         }
 
-        // Combine each column value with comma
-        csv_data.push(csvrow.join(","));
+        // Combine each column value with semicolon
+        csv_data.push(csvrow.join(";"));
       }
       // combine each row data with new line character
       csv_data = csv_data.join("\n");
@@ -77,7 +79,7 @@
     function downloadCSVFile(csv_data) {
       // Create CSV file object and feed our
       // csv_data into it
-      CSVFile = new Blob([csv_data], { type: "text/csv" });
+      CSVFile = new Blob(["\uFEFF"+csv_data], { type: "text/csv; charset=utf-8" });
 
       // Create to temporary link to initiate
       // download process

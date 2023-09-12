@@ -190,8 +190,10 @@ def export_resquest():
     for the current month."""
     db = get_db()
     data = db.execute(
-        "SELECT T1.pos_name, T0.requester, T0.itemcode, 1 AS 'Qty', Date(T0.orderdate) AS'orderdate' "
-        "FROM ORDEREDTESTERS T0 INNER JOIN POS T1 ON T0.orderpos = T1.id "
+        "SELECT T1.pos_name, T0.requester, T0.itemcode, T2.tester_name, 1 AS 'Qty', Date(T0.orderdate) AS'orderdate' "
+        "FROM ORDEREDTESTERS "
+        "T0 INNER JOIN POS T1 ON T0.orderpos = T1.id "
+        "INNER JOIN TESTERS T2 ON T0.itemcode = T2.testercode "
         "WHERE strftime('%m', T0.orderdate) = strftime('%m', 'now')"
     )
     return render_template("testers/export_testers.html", data=data)
