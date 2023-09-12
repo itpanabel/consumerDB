@@ -174,7 +174,7 @@ def colombia():
         # Add customer data to Mailchimp
         #
         if email_address != "":
-          add_customer(LIST_ID_PA, email_address, first_name, last_name,
+          add_customer(LIST_ID_CO, email_address, first_name, last_name,
                       phone, birth_day, gender, store, advisor, country,
                       state, interests, guerlain_specific, sisley_specific,
                       adp_specific, payot_specific, phyto_specific, notas)
