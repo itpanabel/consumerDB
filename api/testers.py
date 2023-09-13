@@ -93,7 +93,7 @@ def create():
 def import_testers():
     """Import CSV file into the TESTERS table"""
     ALLOWED_EXTENSIONS = {'csv'}
-    UPLOAD_FOLDER = os.path.join('api\static', 'uploads')
+    UPLOAD_FOLDER = os.path.join('api/static', 'uploads')
     db = get_db()
     if request.method == "POST":
         csv_file = request.files["fileToImport"]
