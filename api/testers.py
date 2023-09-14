@@ -100,6 +100,14 @@ def import_testers():
         csv_filename = secure_filename(csv_file.filename)
         csv_delimeter = request.form["csvDelimeter"]
 
+        if not csv_file:
+            flash("Se requiere archivo", "alert-danger")
+            return redirect("/testers/import_testers")
+
+        if csv_delimeter == "":
+            flash("Se requiere delimitador del archivo", "alert-danger")
+            return redirect("/testers/import_testers")
+
         uploaded_data_file_path = os.path.join(UPLOAD_FOLDER, csv_filename)
         csv_file.save(uploaded_data_file_path)
 
@@ -107,9 +115,6 @@ def import_testers():
         db.execute("DELETE FROM TESTERS")
         db.commit()
 
-        if csv_delimeter == "":
-            flash("Se requiere delimitador del archivo", "alert-danger")
-            return redirect("testers/import_testers")
         with open(uploaded_data_file_path, "r", encoding="utf-8-sig") as file:
             reader = csv.reader(file, delimiter=csv_delimeter)
             next(reader)
