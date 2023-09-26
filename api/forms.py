@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from pathlib import Path
 from api.db import get_db
+import hashlib
 import _sqlite3
 import json
 import os
@@ -205,7 +206,11 @@ def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str
     })
     now = datetime.now()
 
-    response = client.lists.add_list_member(list_id, {
+    # convert email to md5 hash
+    subscriber_hash = hashlib.md5(email.encode()).hexdigest()
+
+    # Add or Update a member
+    response = client.lists.set_list_member(list_id, subscriber_hash, {
       "email_address": email,
       "email_type": "html",
       "status": "subscribed",
@@ -234,7 +239,7 @@ def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str
       "marketing_permissions": [],
       "tags": []
       })
-    flash("El Usuario fue creado éxitosamente", "alert-success")
+    flash("El Usuario fue creado/actualizado éxitosamente", "alert-success")
     # print("\n", json.dumps(response, indent=2))
 
   except ApiClientError as error:
