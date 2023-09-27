@@ -23,8 +23,8 @@ LIST_ID_PA = "4b890a1b03" # Country - Audience - Panamá
 LIST_ID_CO = "cae142989c" # Country - Audience - Colombia
 LIST_ID_CR = "061656a504" # Country - Audience - Costa Rica
 GROUP_ID_PA = "383283a2bd" # group ID of interests - Panama
-GROUP_ID_CO = "cb260f02fa" # group ID of interests - Panama
-GROUP_ID_CR = "" # group ID of interests - Panama
+GROUP_ID_CO = "cb260f02fa" # group ID of interests - Colombia
+GROUP_ID_CR = "" # group ID of interests - Costa Rica
 
 
 bp = Blueprint("forms", __name__)
@@ -99,11 +99,11 @@ def panama():
       store = request.form["TIENDA"]
       form_interests = request.form.getlist("interests")
       interests = {}
-      guerlain_specific = ";".join(request.form.getlist("guerlain-specific"))
-      sisley_specific = ";".join(request.form.getlist("sisley-specific"))
-      adp_specific = ";".join(request.form.getlist("adp-specific"))
-      payot_specific = ";".join(request.form.getlist("payot-specific"))
-      phyto_specific = ";".join(request.form.getlist("phyto-specific"))
+      guerlain_specific = find_specifics(LIST_ID_PA, email_address, "GUERLAIN", request.form.getlist("guerlain-specific"))
+      sisley_specific = find_specifics(LIST_ID_PA, email_address, "SYSLEY", request.form.getlist("sisley-specific"))
+      adp_specific = find_specifics(LIST_ID_PA, email_address, "ADP", request.form.getlist("adp-specific"))
+      payot_specific = find_specifics(LIST_ID_PA, email_address, "PAYOT", request.form.getlist("payot-specific"))
+      phyto_specific = find_specifics(LIST_ID_PA, email_address, "PHYTO", request.form.getlist("phyto-specific"))
       advisor = request.form["CONSEJERA"]
       notas = request.form["notes"]
       if birth_day == "":
@@ -207,7 +207,7 @@ def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str
     now = datetime.now()
 
     # convert email to md5 hash
-    subscriber_hash = hashlib.md5(email.encode()).hexdigest()
+    subscriber_hash = hashlib.md5(email.lower().encode()).hexdigest()
 
     # Add or Update a member
     response = client.lists.set_list_member(list_id, subscriber_hash, {
@@ -272,6 +272,25 @@ def get_brands(list_id:str, group_id:str):
   except ApiClientError as error:
     print("Error: {}".format(error.text))
 
+
+def find_specifics(list_id, email, specific, new_options):
+  try:
+    client = MailchimpMarketing.Client()
+    client.set_config({
+      "api_key": API_KEY,
+      "server": SERVER_PREFIX
+    })
+
+    subscriber_hash = hashlib.md5(email.lower().encode()).hexdigest()
+    response = client.lists.get_list_member(list_id, subscriber_hash)
+
+    data_list = str(response["merge_fields"][specific]).split(";")
+    data = ";".join(data_list + new_options)
+    return data
+
+
+  except ApiClientError as error:
+    print("Error: {}".format(error.text))
 
 
 def lastday_of_month(mydate:datetime):
