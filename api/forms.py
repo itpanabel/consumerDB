@@ -67,11 +67,7 @@ def testers_request():
     return render_template("forms/trequest.html", testers=data, brands=brands, beauty_advisors=beauty_advisors, pos=pos)
 
   return render_template("forms/bloqueado.html")
-  # my_json = {"data": []}
-  # for row in data:
-  #   my_json["data"].append(dict(row))
-  # return json.dumps(my_json, indent=2)
-  # return json.dumps([dict(record) for record in data], indent=2)
+
 
 
 @bp.route("/panama", methods=("GET", "POST"))
@@ -240,7 +236,6 @@ def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str
       "tags": []
       })
     flash("El Usuario fue creado/actualizado éxitosamente", "alert-success")
-    # print("\n", json.dumps(response, indent=2))
 
   except ApiClientError as error:
     error_json = json.loads(error.text)
