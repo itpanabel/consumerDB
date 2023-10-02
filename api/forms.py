@@ -96,12 +96,13 @@ def panama():
       form_interests = request.form.getlist("interests")
       interests = {}
       guerlain_specific = find_specifics(LIST_ID_PA, email_address, "GUERLAIN", request.form.getlist("guerlain-specific"))
-      sisley_specific = find_specifics(LIST_ID_PA, email_address, "SYSLEY", request.form.getlist("sisley-specific"))
+      sisley_specific = find_specifics(LIST_ID_PA, email_address, "SISLEY", request.form.getlist("sisley-specific"))
       adp_specific = find_specifics(LIST_ID_PA, email_address, "ADP", request.form.getlist("adp-specific"))
       payot_specific = find_specifics(LIST_ID_PA, email_address, "PAYOT", request.form.getlist("payot-specific"))
-      phyto_specific = find_specifics(LIST_ID_PA, email_address, "PHYTO", request.form.getlist("phyto-specific"))
+      phyto_specific = "" #find_specifics(LIST_ID_PA, email_address, "PHYTO", request.form.getlist("phyto-specific"))
       advisor = request.form["CONSEJERA"]
       notas = request.form["notes"]
+      my_geoloc = request.form["geo"]
       if birth_day == "":
         error = "Se requiere fecha de cumpleaños"
         flash(error, "alert-danger")
@@ -119,7 +120,7 @@ def panama():
           add_customer(LIST_ID_PA, email_address, first_name, last_name,
                       phone, birth_day, gender, store, advisor, country,
                       state, interests, guerlain_specific, sisley_specific,
-                      adp_specific, payot_specific, phyto_specific, notas)
+                      adp_specific, payot_specific, phyto_specific, notas, my_geoloc)
 
 
     return render_template("forms/panama.html", my_brands=my_brands, beauty_advisors=beauty_advisors, stores=stores)
@@ -157,6 +158,7 @@ def colombia():
       phyto_specific = find_specifics(LIST_ID_CO, email_address, "PHYTO", request.form.getlist("phyto-specific"))
       advisor = request.form["CONSEJERA"]
       notas = request.form["notes"]
+      my_geoloc = "" #request.form["geo"]
       if birth_day == "":
         error = "Se requiere fecha de cumpleaños"
         flash(error, "alert-danger")
@@ -174,7 +176,7 @@ def colombia():
           add_customer(LIST_ID_CO, email_address, first_name, last_name,
                       phone, birth_day, gender, store, advisor, country,
                       state, interests, guerlain_specific, sisley_specific,
-                      adp_specific, payot_specific, phyto_specific, notas)
+                      adp_specific, payot_specific, phyto_specific, notas, my_geoloc)
 
 
 
@@ -191,7 +193,7 @@ from datetime import datetime
 def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str, bday:str,
                  gender:str, store:str, beauty_advisor:str, country:str,
                  state:str, brands:dict, guerlain_specific:str, sisley_specific:str,
-                 adp_specific:str, payot_specific:str, phyto_specific:str, notes:str):
+                 adp_specific:str, payot_specific:str, phyto_specific:str, notes:str, geoloc:str):
   """This function create a new customer
   in Mailchimp Platform"""
   try:
@@ -240,7 +242,7 @@ def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str
   except ApiClientError as error:
     error_json = json.loads(error.text)
     log = open("error.log", "+a")
-    log.write(f"{now} - {email}: {json.dumps(error_json)}\n")
+    log.write(f"{now} - {email}: {json.dumps(error_json)} Geoloc: {geoloc}\n")
     log.close()
     flash(error.text, "alert-danger")
     print(f"{email}:\n{json.dumps(error_json, indent=2)}")

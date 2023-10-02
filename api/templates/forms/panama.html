@@ -263,6 +263,8 @@
         <button type="submit" class="btn btn-primary">Registrar Cliente</button>
       </div>
       <!-- end Submit button -->
+      <!-- Geolocalization data -->
+      <input type="hidden" name="geo" id="geo">
     </form>
   </div>
   <br><br>
@@ -288,6 +290,41 @@
               requiredCheckboxes.attr('required', 'required');
           }
       });
+      getLocalization();
     });
+
+    /**
+     * Obtain Geolocalization data
+     */
+    let geoTag = document.getElementById("geo");
+
+    function getLocalization() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showGeoError, { enableHighAccuracy: true });
+      } else {
+        geoTag.setAttribute("value", "Geolocation is not supported by this browser.");
+      }
+    }
+
+    function showPosition(position) {
+      geoTag.setAttribute("value", `https://google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`);
+    }
+
+    function showGeoError(error) {
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          geoTag.setAttribute("value", "User denied the request of Geolocalization");
+          break;
+        case error.POSITION_UNAVAILABLE:
+          geoTag.setAttribute("value", "Localization information is unavailable");
+          break;
+        case error.TIMEOUT:
+          geoTag.setAttribute("value", "The request to get user location timed out.");
+          break;
+        case error.UNKNOWN_ERROR:
+          geoTag.setAttribute("value", "An unknown error occurred.");
+          break;
+      }
+    }
   </script>
 {% endblock countrySelection %}
