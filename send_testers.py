@@ -90,9 +90,9 @@ def send_testers():
     print(f"File not found!")
 
 
-# Execute email send on the 10
+# Execute email send on the 11
 # every month.
-if current_date.day == 10:
+if current_date.day == 11:
    send_testers()
 else:
    print(f"\nNo email was sent! The day of the month is {current_date.day}\n")
