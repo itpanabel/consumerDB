@@ -9,6 +9,7 @@ from api.db import get_db
 import hashlib
 import _sqlite3
 import json
+import re
 import os
 
 #
@@ -283,14 +284,14 @@ def find_specifics(list_id, email, specific, new_options):
 
     data_list = str(response["merge_fields"][specific]).split(";")
     data = ";".join(data_list + new_options)
-    return data
+    return re.sub("^;", "", data)
 
 
   except ApiClientError as error:
     my_error = json.loads(error.text)
     if my_error["title"] == "Resource Not Found":
-      data = ""
-      return data
+      new_specific = ";".join(new_options)
+      return re.sub("^;", "", new_specific)
     else:
       print("Error: {}".format(error.text))
 
