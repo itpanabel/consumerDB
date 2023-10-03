@@ -287,7 +287,12 @@ def find_specifics(list_id, email, specific, new_options):
 
 
   except ApiClientError as error:
-    print("Error: {}".format(error.text))
+    my_error = json.loads(error.text)
+    if my_error["title"] == "Resource Not Found":
+      data = ""
+      return data
+    else:
+      print("Error: {}".format(error.text))
 
 
 def lastday_of_month(mydate:datetime):
