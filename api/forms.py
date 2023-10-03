@@ -151,14 +151,14 @@ def colombia():
       store = request.form["TIENDA"]
       form_interests = request.form.getlist("interests")
       interests = {}
-      guerlain_specific = find_specifics(LIST_ID_CO, email_address, "GUERLAIN", request.form.getlist("guerlain-specific"))
-      sisley_specific = find_specifics(LIST_ID_CO, email_address, "SYSLEY", request.form.getlist("sisley-specific"))
+      guerlain_specific = None #find_specifics(LIST_ID_CO, email_address, "GUERLAIN", request.form.getlist("guerlain-specific"))
+      sisley_specific = None #find_specifics(LIST_ID_CO, email_address, "SYSLEY", request.form.getlist("sisley-specific"))
       adp_specific = find_specifics(LIST_ID_CO, email_address, "ADP", request.form.getlist("adp-specific"))
-      payot_specific = find_specifics(LIST_ID_CO, email_address, "PAYOT", request.form.getlist("payot-specific"))
+      payot_specific = None #find_specifics(LIST_ID_CO, email_address, "PAYOT", request.form.getlist("payot-specific"))
       phyto_specific = find_specifics(LIST_ID_CO, email_address, "PHYTO", request.form.getlist("phyto-specific"))
       advisor = request.form["CONSEJERA"]
       notas = request.form["notes"]
-      my_geoloc = "" #request.form["geo"]
+      my_geoloc = None #request.form["geo"]
       if birth_day == "":
         error = "Se requiere fecha de cumpleaños"
         flash(error, "alert-danger")
