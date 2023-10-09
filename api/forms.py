@@ -243,7 +243,7 @@ def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str
   except ApiClientError as error:
     error_json = json.loads(error.text)
     log = open("error.log", "+a")
-    log.write(f"{now} - {email}: {json.dumps(error_json)} Geoloc: {geoloc}\n")
+    log.write(f"{now} - {email} - {beauty_advisor}: {json.dumps(error_json)} Geoloc: {geoloc}\n")
     log.close()
     flash(error.text, "alert-danger")
     print(f"{email}:\n{json.dumps(error_json, indent=2)}")
