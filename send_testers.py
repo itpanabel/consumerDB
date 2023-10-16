@@ -18,7 +18,7 @@ current_date = datetime.date.today()
 
 def send_testers():
   # Connect to the database
-  conn = sqlite3.connect('instance/App.sqlite')
+  conn = sqlite3.connect('./instance/App.sqlite')
   cursor = conn.cursor()
 
   # Execute your SQL query
@@ -45,7 +45,7 @@ def send_testers():
 
   message = Mail(
       from_email=From('no-reply@panabel.com', 'NO-REPLY PANABEL'),
-      to_emails=To('alan+sendgrid@panabel.com', "Probadores Panabel"),
+      to_emails=To('probadores@panabel.com', "Probadores Panabel"),
       subject=Subject(f'Pedido de probadores al {current_date}'),
       html_content=HtmlContent(f"""
       <div style="font-family: sans-serif;">
