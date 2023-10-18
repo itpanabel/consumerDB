@@ -11,14 +11,14 @@ from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, File
 
 # load enviroment variables
 load_dotenv(Path(".env"))
-SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', default="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")
 # Current Day
 current_date = datetime.date.today()
 
 
 def send_testers():
   # Connect to the database
-  conn = sqlite3.connect('./instance/App.sqlite')
+  conn = sqlite3.connect('/home/itpanabel/consumerDB/instance/App.sqlite')
   cursor = conn.cursor()
 
   # Execute your SQL query
@@ -44,7 +44,7 @@ def send_testers():
       csv_writer.writerows(result)
 
   message = Mail(
-      from_email=From('no-reply@panabel.com', 'NO-REPLY PANABEL'),
+      from_email=From('no-reply@panabel.com', 'NO-REPLY - GRUPO PANABEL'),
       to_emails=To('probadores@panabel.com', "Probadores Panabel"),
       subject=Subject(f'Pedido de probadores al {current_date}'),
       html_content=HtmlContent(f"""
@@ -82,12 +82,13 @@ def send_testers():
      # en caso de error
      print(f"\nStatus: {response.status_code}\n\nBody:\n{response.body}\n\nHeaders:\n\n{response.headers}\n")
 
+  print("\nEmail enviado exitosamente!\n")
   # Delete File Sent
   if os.path.exists(csv_filename):
     # aling here
     os.remove(csv_filename)
   else:
-    print(f"File not found!")
+    print("File not found!")
 
 
 # Execute email send on the 11
