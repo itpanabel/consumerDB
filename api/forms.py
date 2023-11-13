@@ -104,9 +104,9 @@ def panama():
       advisor = request.form["CONSEJERA"]
       notas = request.form["notes"]
       my_geoloc = request.form["geo"]
-      if birth_day == "":
-        error = "Se requiere fecha de cumpleaños"
-        flash(error, "alert-danger")
+      # if birth_day == "":
+      #   error = "Se requiere fecha de cumpleaños"
+      #   flash(error, "alert-danger")
       if not form_interests:
         error = "Se requiere al menos una marca"
         flash(error, "alert-warning")
@@ -160,9 +160,9 @@ def colombia():
       advisor = request.form["CONSEJERA"]
       notas = request.form["notes"]
       my_geoloc = None #request.form["geo"]
-      if birth_day == "":
-        error = "Se requiere fecha de cumpleaños"
-        flash(error, "alert-danger")
+      # if birth_day == "":
+      #   error = "Se requiere fecha de cumpleaños"
+      #   flash(error, "alert-danger")
       if not form_interests:
         error = "Se requiere al menos una marca"
         flash(error, "alert-warning")
