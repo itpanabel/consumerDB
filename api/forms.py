@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 from pathlib import Path
 from api.db import get_db
 import hashlib
-import _sqlite3
 import json
 import re
 import os
@@ -77,7 +76,7 @@ def panama():
     my_brands = get_brands(LIST_ID_PA, GROUP_ID_PA)
     db = get_db()
     beauty_advisors = db.execute(
-        "SELECT fullname FROM CONSEJERAS WHERE subsidiaryid = '1'"
+        "SELECT fullname FROM CONSEJERAS WHERE subsidiaryid = '1' ORDER BY fullname ASC"
     ).fetchall()
     stores = db.execute(
         "SELECT storename FROM TIENDAS WHERE subsidiaryid = '1'"
@@ -133,7 +132,7 @@ def colombia():
     my_brands = get_brands(LIST_ID_CO, GROUP_ID_CO)
     db = get_db()
     beauty_advisors = db.execute(
-        "SELECT fullname FROM CONSEJERAS WHERE subsidiaryid = '2'"
+        "SELECT fullname FROM CONSEJERAS WHERE subsidiaryid = '2' ORDER BY fullname ASC"
     ).fetchall()
     stores = db.execute(
         "SELECT storename FROM TIENDAS WHERE subsidiaryid = '2'"
