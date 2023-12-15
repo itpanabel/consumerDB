@@ -17,7 +17,8 @@ def index():
     db = get_db()
     testers = db.execute(
         "SELECT T0.testercode, T0.tester_name, T0.tester_brand, T0.tester_axe, T1.entityname "
-        "FROM TESTERS T0 INNER JOIN SUBSIDIARIES T1 ON T0.subsidiaryid = T1.id"
+        "FROM TESTERS T0 INNER JOIN SUBSIDIARIES T1 ON T0.subsidiaryid = T1.id "
+        "ORDER BY T0.tester_brand ASC, T0.tester_axe ASC, T0.tester_name"
     ).fetchall()
     return render_template("testers/index.html", testers=testers)
 
