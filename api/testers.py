@@ -185,7 +185,7 @@ def delete(id):
     """Delete tester from Database."""
     get_tester(id)
     db = get_db()
-    db.execute("DELETE FROM TESTERS WHERE id = ?", (id,))
+    db.execute("DELETE FROM TESTERS WHERE testercode = ?", (id,))
     db.commit()
     return redirect(url_for("testers.index"))
 
