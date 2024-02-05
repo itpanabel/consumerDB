@@ -40,9 +40,9 @@ def index():
 def testers_request():
   db = get_db()
   data = db.execute("SELECT * FROM TESTERS").fetchall()
-  brands = db.execute("SELECT DISTINCT tester_brand FROM TESTERS").fetchall()
+  brands = db.execute("SELECT DISTINCT tester_brand FROM TESTERS ORDER BY tester_brand ASC").fetchall()
   beauty_advisors = db.execute("SELECT id, fullname FROM CONSEJERAS WHERE subsidiaryid = '1'")
-  pos = db.execute("SELECT id, pos_name FROM POS WHERE subsidiaryid = '1' ORDER BY pos_name")
+  pos = db.execute("SELECT id, pos_name FROM POS WHERE subsidiaryid = '1' ORDER BY pos_name ASC")
   current_date = datetime.now()
   start_date = datetime(current_date.year, current_date.month, 10)
 
