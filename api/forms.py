@@ -135,7 +135,7 @@ def colombia():
         "SELECT fullname FROM CONSEJERAS WHERE subsidiaryid = '2' ORDER BY fullname ASC"
     ).fetchall()
     stores = db.execute(
-        "SELECT storename FROM TIENDAS WHERE subsidiaryid = '2'"
+        "SELECT storename FROM TIENDAS WHERE subsidiaryid = '2' ORDER BY storename ASC"
     ).fetchall()
     error = None
 
