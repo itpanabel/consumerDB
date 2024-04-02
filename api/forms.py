@@ -60,7 +60,7 @@ def testers_request():
           )
           db.commit()
           print(f"POS: {pdv}, consejera: {advisor} Articulos Solicitados: {item}, solicitado: {orderedDate.strftime('%Y-%m-%d %H:%M:%S.%f')}")
-        flash("Se envió su pedido exitosamente!", "alert-success")
+        flash("Se envió su pedido exitosamente!\n Debe estarlo recibiendo el mes siguiente.", "alert-success")
       except db.IntegrityError:
         flash("Por favor contactar a soporte", "alert-warning")
 
