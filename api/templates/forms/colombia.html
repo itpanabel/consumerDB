@@ -9,18 +9,25 @@
 {% block content %}
   <div class="container">
     <!-- General Data -->
-    <form class="row g-3" method="post">
+    <form class="row g-3 needs-validation" method="post" novalidate>
       <div class="col-md-6">
         <label for="fname" class="form-label" >Nombre</label>
         <input type="text" class="form-control" id="fname" name="NOMBRE" required>
+        <div class="valid-feedback">Datos Correctos</div>
+        <div class="invalid-feedback">Se requiere Nombre</div>
       </div>
       <div class="col-md-6">
         <label for="lname" class="form-label">Apellido</label>
         <input type="text" class="form-control" id="lname" name="APELLIDO" required>
+        <div class="invalid-feedback">Se requiere Apellido</div>
       </div>
       <div class="col-md-6">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control email-autocomplete" id="email" name="email_address" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required>
+        <div>
+          <!-- align here content -->
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control email-autocomplete2" id="email" name="email_address" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required>
+        </div>
+        <div class="invalid-feedback">Se requiere correo electrónico</div>
       </div>
       <div class="col-md-6">
         <label for="phone" class="form-label">Teléfono</label>
@@ -71,6 +78,7 @@
               <option value="{{ store['storename'] }}">{{ store["storename"] }}</option>
             {% endfor %}
           </select>
+          <div class="invalid-feedback">Seleccione una tienda.</div>
         </fieldset>
       </div>
       <!-- Brands -->
@@ -97,6 +105,7 @@
             {% endfor %}
           </div>
         </fieldset>
+        <div class="invalid-feedback">Seleccione al menos una marca.</div>
       </div>
       <!-- Guerlain Specific -->
       <div class="col-12" id="guerlainSpecific">
@@ -245,6 +254,7 @@
               <option value="{{ advisor['fullname'] }}">{{ advisor["fullname"] }}</option>
             {% endfor %}
           </select>
+          <div class="invalid-feedback">Seleccione una BA.</div>
         </fieldset>
       </div>
       <!-- end Conselours -->
@@ -257,7 +267,18 @@
           </div>
         </fieldset>
       </div>
-      <br><br>
+      <!-- Terms & Conditions -->
+      <div class="col-12">
+        <div class="container">
+          <div class="row">
+            <div class="form-check form-switch">
+              <input type="checkbox" name="acceptTermsConditions" id="acceptTermsConditions" role="switch" class="form-check-input" required>
+              <label for="acceptTermsConditions" class="form-check-label">Acepta&nbsp;<a href="https://panabel.com/politica-de-tratamiento-de-datos/" class="link-underline-primary">Terminos & Condiciones</a></label>
+              <div class="invalid-feedback">Debe aceptar terminos y condiciones.</div>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- Submit button -->
       <div class="col-12">
         <button type="submit" class="btn btn-primary" onclick="notifyMe()">Registrar Cliente</button>
@@ -266,7 +287,33 @@
     </form>
   </div>
   <br><br>
+
 {% endblock content %}
+
+{% block jsValidation %}
+  <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (() => {
+      'use strict'
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      const forms = document.querySelectorAll('.needs-validation')
+
+      // Loop over them and prevent submission
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+
+          form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+  </script>
+{% endblock jsValidation %}
+
 
 {% block countrySelection %}
   <script>
