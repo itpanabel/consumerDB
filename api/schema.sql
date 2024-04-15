@@ -52,7 +52,7 @@ CREATE TABLE TESTERS (
     testercode TEXT PRIMARY KEY UNIQUE NOT NULL,
     tester_name TEXT NOT NULL,
     tester_brand TEXT NOT NULL,
-    tester_axe TEXT NOT NULL,
+    tester_axe TEXT CHECK(LENGTH(tester_axe) = 4),
     subsidiaryid INTEGER NOT NULL,
     FOREIGN KEY (subsidiaryid) REFERENCES SUBSIDIARIES (id)
 );
@@ -63,5 +63,7 @@ CREATE TABLE ORDEREDTESTERS (
   orderdate TEXT NOT NULL,
   requester TEXT NOT NULL,
   orderpos INTEGER NOT NULL,
-  FOREIGN KEY (orderpos) REFERENCES POS (id)
+  subsidiary INTEGER NOT NULL,
+  FOREIGN KEY (orderpos) REFERENCES POS (id),
+  FOREIGN KEY (subsidiary) REFERENCES SUBSIDIARIES (id)
 );

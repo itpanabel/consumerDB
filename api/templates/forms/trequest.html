@@ -5,24 +5,28 @@
 {% endblock header %}
 
 {% block content %}
-<form method="post">
+<form method="post" class="g-3 needs-validation" novalidate>
   <div class="mb-3">
     <label for="pos" class="form-label">Punto de Venta</label>
-    <select name="pos" id="pos" class="form-select">
+    <select name="pos" id="pos" class="form-select" required>
       <option value="" selected>Seleccione Punto de Venta</option>
       {% for store in pos %}
         <option value="{{ store['id'] }}">{{ store["pos_name"] }}</option>
       {% endfor %}
     </select>
+    <div class="valid-feedback">Tienda Seleccionada</div>
+    <div class="invalid-feedback">Seleccione punto de venta o puerta</div>
   </div>
   <div class="mb-3">
     <label for="consejera" class="form-label">Consejera</label>
-    <select name="consejera" id="consejera" class="form-select">
+    <select name="consejera" id="consejera" class="form-select" required>
       <option value="" selected>Seleccione Solicitante</option>
       {% for advisor in beauty_advisors %}
         <option value="{{ advisor['fullname'] }}">{{ advisor["fullname"] }}</option>
       {% endfor %}
     </select>
+    <div class="valid-feedback">Consejera o BA seleccionada.</div>
+    <div class="invalid-feedback">Se requiere seleccionar consejera o BA.</div>
   </div>
   <div class="mb-3">
     <label for="filter" class="form-label">Filtar Marca</label>
@@ -55,4 +59,28 @@
     </table>
     <button type="submit" class="btn btn-primary">Hacer Pedidos</button>
   </form>
+
+  <script>
+    /***
+     * Disabling form submissions if there are invalid fields
+     */
+    (() => {
+      'use strict'
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      const forms = document.querySelectorAll('.needs-validation')
+
+      // Loop over them and prevent submission
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+
+          form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+  </script>
 {% endblock content %}

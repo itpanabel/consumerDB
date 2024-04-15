@@ -39,14 +39,21 @@ def index():
 @bp.route("/testers-request", methods=("GET", "POST"))
 def testers_request():
   db = get_db()
-  data = db.execute("SELECT * FROM TESTERS").fetchall()
-  brands = db.execute("SELECT DISTINCT tester_brand FROM TESTERS ORDER BY tester_brand ASC").fetchall()
-  beauty_advisors = db.execute("SELECT id, fullname FROM CONSEJERAS WHERE subsidiaryid = '1'")
-  pos = db.execute("SELECT id, pos_name FROM POS WHERE subsidiaryid = '1' ORDER BY pos_name ASC")
+  subsidiaryCode = request.args.get("country")
+  data = db.execute(f"SELECT * FROM TESTERS WHERE subsidiaryid = {subsidiaryCode}").fetchall()
+  brands = db.execute(f"SELECT DISTINCT tester_brand FROM TESTERS WHERE subsidiaryid = {subsidiaryCode} ORDER BY tester_brand ASC").fetchall()
+  beauty_advisors = db.execute(f"SELECT id, fullname FROM CONSEJERAS WHERE subsidiaryid = {subsidiaryCode}")
+  pos = db.execute(f"SELECT id, pos_name FROM POS WHERE subsidiaryid = {subsidiaryCode} ORDER BY pos_name ASC")
   current_date = datetime.now()
-  start_date = datetime(current_date.year, current_date.month, 10)
+  # para colombia el debe estar habilitado del 20-28 de cada mes.
+  if int(subsidiaryCode) == 1:
+    start_day = 1
+    end_day = 15
+  else:
+    start_day = 15
+    end_day = 28
 
-  if current_date.day <= start_date.day:
+  if current_date.day in range(start_day, end_day):
     if request.method == "POST":
       pdv = request.form["pos"]
       advisor = request.form["consejera"]
@@ -55,8 +62,8 @@ def testers_request():
       try:
         for item in itemCode:
           db.execute(
-            "INSERT INTO ORDEREDTESTERS (itemcode, orderdate, requester, orderpos) VALUES (?, ?, ?, ?)",
-            (item, orderedDate, advisor, pdv)
+            "INSERT INTO ORDEREDTESTERS (itemcode, orderdate, requester, orderpos, subsidiary) VALUES (?, ?, ?, ?, ?)",
+            (item, orderedDate, advisor, pdv, subsidiaryCode)
           )
           db.commit()
           print(f"POS: {pdv}, consejera: {advisor} Articulos Solicitados: {item}, solicitado: {orderedDate.strftime('%Y-%m-%d %H:%M:%S.%f')}")
