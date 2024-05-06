@@ -105,7 +105,7 @@ def send_testers(subsidiary: int, emailTo: str):
 # Execute email send on the 11
 # and the last day of the month
 # every month.
-if current_date.day == 11:
+if current_date.day == 16:
    send_testers(1,"probadores")
 elif current_date == calendar.monthrange(current_date.year, current_date.month)[1]:
    send_testers(2, "probadores.colombia")
