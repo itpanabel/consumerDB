@@ -48,7 +48,7 @@ def testers_request():
   # para colombia el debe estar habilitado del 20-28 de cada mes.
   if int(subsidiaryCode) == 1:
     start_day = 1
-    end_day = 7
+    end_day = 8
   else:
     start_day = 15
     end_day = 28
