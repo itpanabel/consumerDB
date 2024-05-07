@@ -102,10 +102,12 @@ def send_testers(subsidiary: int, emailTo: str):
     print("File not found!")
 
 
-# Execute email send on the 11
+# Execute email send on the 8 for
+# Panama y last day of month for
+# Colombia
 # and the last day of the month
 # every month.
-if current_date.day == 16:
+if current_date.day == 8:
    send_testers(1,"probadores")
 elif current_date == calendar.monthrange(current_date.year, current_date.month)[1]:
    send_testers(2, "probadores.colombia")
