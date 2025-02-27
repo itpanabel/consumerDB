@@ -18,10 +18,10 @@
       <label for="testerbrand" class="form-label">Marca</label>
       <select name="testerbrand" id="testerbrand" class="form-select" required>
         {% for brand in brands %}
-          {% if tester["tester_brand"] == brand["tester_brand"] %}
-            <option value="{{ tester['tester_brand'] }}" selected>{{ tester["tester_brand"] }}</option>
+          {% if tester["tester_id"] == brand["id"] %}
+            <option value="{{ brand['id'] }}" selected>{{ brand["brandname"] }}</option>
           {% else %}
-            <option value="{{ brand['tester_brand'] }}">{{ brand["tester_brand"] }}</option>
+            <option value="{{ brand['id'] }}">{{ brand["brandname"] }}</option>
           {% endif %}
         {% endfor %}
       </select>
@@ -33,7 +33,7 @@
           {% if tester["tester_axe"] == axe["tester_axe"] %}
             <option value="{{ tester['tester_axe'] }}" selected>{{ tester["tester_axe"] }}</option>
           {% else %}
-            <option value="axe['tester_axe']">{{ axe["tester_axe"] }}</option>
+            <option value="{{ axe['tester_axe'] }}">{{ axe["tester_axe"] }}</option>
           {% endif %}
         {% endfor %}
       </select>

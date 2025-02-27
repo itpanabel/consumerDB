@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Crear Marca{% endblock title %}</h1>
+{% endblock header %}
+
+{% block content %}
+  <form method="post" class="row g-3">
+    <div class="col-md-6">
+      <label for="brandname" class="form-label">Nombre de la Marca</label>
+      <input type="text" class="form-control" id="brandname" name="brandname" required>
+    </div>
+    <div class="col-md-6">
+      <label for="brandcode" class="form-label">Código corto de Marca</label>
+      <input type="text" class="form-control" id="brandcode" name="brandcode" required>
+    </div>
+    <div class="col-md-12">
+      <label for="entity" class="form-label">País</label>
+      <select name="entity" id="entity" class="form-select">
+        <option value="" selected>--Seleccione País--</option>
+        {% for entity in entities %}
+          <option value="{{ entity['id'] }}">{{ entity["entityname"] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto">
+      <input type="submit" value="Crear" class="btn btn-primary btn-lg">
+      <a href="{{ url_for('brands.index') }}" class="btn btn-danger btn-lg">Cancelar</a>
+    </div>
+  </form>
+{% endblock content %}

@@ -34,7 +34,7 @@ def create_app(test_config=None):
     db.init_app(app)
 
     # Register All Blueprint
-    from . import auth, entity, stores, beautyadvisors, forms, pos, testers
+    from . import auth, entity, stores, beautyadvisors, forms, pos, testers, brands
     app.register_blueprint(auth.bp)
     app.register_blueprint(entity.bp)
     app.register_blueprint(stores.bp)
@@ -42,6 +42,7 @@ def create_app(test_config=None):
     app.register_blueprint(pos.bp)
     app.register_blueprint(testers.bp)
     app.register_blueprint(forms.bp)
+    app.register_blueprint(brands.bp)
     app.add_url_rule("/", endpoint="index")
 
     return app

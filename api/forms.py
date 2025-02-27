@@ -41,7 +41,7 @@ def testers_request():
   db = get_db()
   subsidiaryCode = request.args.get("country")
   data = db.execute(f"SELECT * FROM TESTERS WHERE subsidiaryid = {subsidiaryCode}").fetchall()
-  brands = db.execute(f"SELECT DISTINCT tester_brand FROM TESTERS WHERE subsidiaryid = {subsidiaryCode} ORDER BY tester_brand ASC").fetchall()
+  brands = db.execute(f"SELECT brandname FROM MARCAS WHERE subsidiaryid = {subsidiaryCode} ORDER BY brandname ASC").fetchall()
   beauty_advisors = db.execute(f"SELECT id, fullname FROM CONSEJERAS WHERE subsidiaryid = {subsidiaryCode}")
   pos = db.execute(f"SELECT id, pos_name FROM POS WHERE subsidiaryid = {subsidiaryCode} ORDER BY pos_name ASC")
   current_date = datetime.now()

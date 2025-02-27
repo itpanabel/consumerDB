@@ -19,7 +19,7 @@
       <select name="testerbrand" id="testerbrand" class="form-select" required>
         <option value="" selected>Seleccione una Marca</option>
         {% for brand in brands %}
-          <option value="{{ brand['tester_brand'] }}">{{ brand["tester_brand"] }}</option>
+          <option value="{{ brand['id'] }}">{{ brand["brandname"] }}</option>
         {% endfor %}
       </select>
     </div>

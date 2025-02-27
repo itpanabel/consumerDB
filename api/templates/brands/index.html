@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block header %}
+  <h1>{% block title %}Marcas{% endblock title %}</h1>
+  {% if g.user %}
+    <a href="{{ url_for('brands.create') }}" class="btn btn-success">Nueva Marca</a>
+  {% endif %}
+  <br>
+{% endblock header %}
+
+{% block content %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Codigo de Marca</th>
+        <th scope="col">Marca</th>
+        <th scope="col">Marca Corta</th>
+        <th scope="col" colspan="4">País</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for brand in brands %}
+        <tr>
+          <th scope="row">{{ brand["id"] }}</th>
+          <td>{{ brand["brandname"] }}</td>
+          <td>{{ brand["brandcode"] }}</td>
+          <td>{{ brand["entityname"] }}</td>
+          {% if g.user %}
+          <td><a href="{{ url_for('brands.update', id=brand['id']) }}" class="text-primary"><i class="fa-regular fa-pen-to-square"></i></a></td>
+          <td><a href="{{ url_for('brands.delete', id=brand['id']) }}" class="text-danger"><i class="fa-regular fa-trash-can"></i></a></td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock content %}
+
+
+

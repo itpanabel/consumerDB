@@ -60,6 +60,9 @@
           <li class="nav-item">
             <a href="{{ url_for('testers.export_resquest') }}" class="nav-link {% if request.endpoint=='testers.export_resquest' %}active{% endif %}">Testers Solicitados</a>
           </li>
+          <li class="nav-item">
+            <a href="{{ url_for('brands.index') }}" class="nav-link {% if request.endpoint=='brands.index' %}active{% endif %}">Marcas</a>
+          </li>
           {% else %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

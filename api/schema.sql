@@ -30,7 +30,7 @@ CREATE TABLE TIENDAS (
 CREATE TABLE MARCAS (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     brandname TEXT NOT NULL,
-    brandid TEXT UNIQUE NOT NULL,
+    brandcode TEXT UNIQUE NOT NULL,
     subsidiaryid INTEGER NOT NULL,
     FOREIGN KEY (subsidiaryid) REFERENCES SUBSIDIARIES (id)
 );
@@ -38,7 +38,9 @@ CREATE TABLE MARCAS (
 CREATE TABLE USERS (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    subsidiary_id INTEGER,
+    FOREIGN KEY (subsidiary_id) REFERENCES SUBSIDIARIES (id)
 );
 
 CREATE TABLE POS (
@@ -50,11 +52,13 @@ CREATE TABLE POS (
 
 CREATE TABLE TESTERS (
     testercode TEXT PRIMARY KEY UNIQUE NOT NULL,
+    barcode TEXT NULL,
     tester_name TEXT NOT NULL,
-    tester_brand TEXT NOT NULL,
-    tester_axe TEXT CHECK(LENGTH(tester_axe) = 4),
+    tester_id INTEGER NOT NULL,
+    tester_axe TEXT CHECK(LENGTH(tester_axe) <= 4),
     subsidiaryid INTEGER NOT NULL,
-    FOREIGN KEY (subsidiaryid) REFERENCES SUBSIDIARIES (id)
+    FOREIGN KEY (subsidiaryid) REFERENCES SUBSIDIARIES (id),
+    FOREIGN KEY (tester_id) REFERENCES MARCAS (id)
 );
 
 CREATE TABLE ORDEREDTESTERS (

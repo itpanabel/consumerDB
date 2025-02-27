@@ -15,11 +15,21 @@ bp = Blueprint("testers", __name__, url_prefix="/testers")
 def index():
     """Return all testers created"""
     db = get_db()
-    testers = db.execute(
-        "SELECT T0.testercode, T0.tester_name, T0.tester_brand, T0.tester_axe, T1.entityname "
-        "FROM TESTERS T0 INNER JOIN SUBSIDIARIES T1 ON T0.subsidiaryid = T1.id "
-        "ORDER BY T0.tester_brand ASC, T0.tester_axe ASC, T0.tester_name"
-    ).fetchall()
+    if (g.user['username'] != "admin"):
+      username = g.user['username']
+      userCountry = db.execute("SELECT subsidiary_id FROM USERS WHERE username = ?", (username,)).fetchone()[0]
+      testers = db.execute(
+          "SELECT T0.testercode, T0.tester_name, T2.brandname, T0.tester_axe, T1.entityname "
+          "FROM TESTERS T0 INNER JOIN SUBSIDIARIES T1 ON T0.subsidiaryid = T1.id INNER JOIN MARCAS T2 ON T0.tester_id = T2.id "
+          "WHERE T0.subsidiaryid = ?"
+          "ORDER BY T2.brandname ASC, T0.tester_axe ASC, T0.tester_name", (userCountry,)
+      ).fetchall()
+    else:
+      testers = db.execute(
+          "SELECT T0.testercode, T0.tester_name, T2.brandname, T0.tester_axe, T1.entityname "
+          "FROM TESTERS T0 INNER JOIN SUBSIDIARIES T1 ON T0.subsidiaryid = T1.id INNER JOIN MARCAS T2 ON T0.tester_id = T2.id "
+          "ORDER BY T2.brandname ASC, T0.tester_axe ASC, T0.tester_name"
+      ).fetchall()
     return render_template("testers/index.html", testers=testers)
 
 
@@ -28,7 +38,7 @@ def get_tester(id):
     :param id: tester id
     """
     tester = get_db().execute(
-        "SELECT testercode, tester_name, tester_brand, tester_axe, subsidiaryid "
+        "SELECT testercode, tester_name, tester_id, tester_axe, subsidiaryid "
         "FROM TESTERS "
         "WHERE testercode = ?",
         (id,),
@@ -47,7 +57,7 @@ def create():
     if request.method == "POST":
         tester_code = request.form["testercode"]
         tester_name = request.form["testername"]
-        tester_brand = request.form["testerbrand"]
+        tester_id = request.form["testerbrand"]
         tester_axe = request.form["testeraxe"]
         entity = request.form["entity"]
         db = get_db()
@@ -63,8 +73,8 @@ def create():
         if error is None:
             try:
                 db.execute(
-                    "INSERT INTO TESTERS (testercode, tester_name, tester_brand, tester_axe, subsidiaryid) VALUES (?, ?, ?, ?, ?)",
-                    (tester_code, tester_name, tester_brand, tester_axe, entity)
+                    "INSERT INTO TESTERS (testercode, tester_name, tester_id, tester_axe, subsidiaryid) VALUES (?, ?, ?, ?, ?)",
+                    (tester_code, tester_name, tester_id, tester_axe, entity)
                 )
                 db.commit()
             except db.IntegrityError:
@@ -78,12 +88,17 @@ def create():
 
     # Get Entities for Select tag
     db = get_db()
+    if (g.user['username'] != "admin"):
+      username = g.user['username']
+      userCountry = db.execute("SELECT subsidiary_id FROM USERS WHERE username = ?", (username,)).fetchone()[0]
+      brands = db.execute("SELECT id, brandname FROM MARCAS WHERE subsidiaryid = ? ORDER BY brandname", (userCountry,)).fetchall()
+    else:
+      brands = db.execute("SELECT id, brandname FROM MARCAS ORDER BY brandname").fetchall()
     entities = db.execute(
         "SELECT id, entityname "
         "FROM SUBSIDIARIES "
         "ORDER BY id"
     ).fetchall()
-    brands = db.execute("SELECT DISTINCT tester_brand FROM TESTERS").fetchall()
     axes = db.execute("SELECT DISTINCT tester_axe FROM TESTERS").fetchall()
 
     return render_template("testers/create.html", entities=entities, brands=brands, axes=axes)
@@ -126,7 +141,7 @@ def import_testers():
                 itemaxe = row[2]
                 try:
                     db.execute(
-                        "INSERT INTO TESTERS (testercode, tester_name, tester_brand, tester_axe, subsidiaryid) VALUES (?, ?, ?, ?, ?)",
+                        "INSERT INTO TESTERS (testercode, tester_name, tester_id, tester_axe, subsidiaryid) VALUES (?, ?, ?, ?, ?)",
                         (itemcode, itemname, itembrand, itemaxe, 1)
                     )
                     db.commit()
@@ -141,12 +156,13 @@ def import_testers():
 @login_required
 def update(id):
     """Update data for a tester"""
+    username = g.user['username']
     tester = get_tester(id)
 
     if request.method == "POST":
         tester_code = request.form["testercode"]
         tester_name = request.form["testername"]
-        tester_brand = request.form["testerbrand"]
+        tester_id = request.form["testerbrand"]
         tester_axe = request.form["testeraxe"]
         entity = request.form["entity"]
         error = None
@@ -159,8 +175,8 @@ def update(id):
         else:
             db = get_db()
             db.execute(
-                "UPDATE TESTERS SET testercode = ?, tester_name = ?, tester_brand = ?, tester_axe = ?, subsidiaryid = ? "
-                "WHERE testercode = ?", (tester_code, tester_name, tester_brand, tester_axe, entity, id)
+                "UPDATE TESTERS SET testercode = ?, tester_name = ?, tester_id = ?, tester_axe = ?, subsidiaryid = ? "
+                "WHERE testercode = ?", (tester_code, tester_name, tester_id, tester_axe, entity, id)
             )
             db.commit()
             return redirect(url_for("testers.index"))
@@ -172,7 +188,8 @@ def update(id):
         "FROM SUBSIDIARIES "
         "ORDER BY id"
     ).fetchall()
-    brands = db.execute("SELECT DISTINCT tester_brand FROM TESTERS").fetchall()
+    userCountry = db.execute("SELECT subsidiary_id FROM USERS WHERE username = ?", (username,)).fetchone()[0]
+    brands = db.execute("SELECT id, brandname FROM MARCAS WHERE subsidiaryid = ? ORDER BY brandname", (userCountry,)).fetchall()
     axes = db.execute("SELECT DISTINCT tester_axe FROM TESTERS").fetchall()
 
     return render_template("testers/update.html", tester=tester, entities=entities, brands=brands, axes=axes)
