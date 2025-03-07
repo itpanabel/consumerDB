@@ -40,7 +40,7 @@ def index():
 def testers_request():
   db = get_db()
   subsidiaryCode = request.args.get("country")
-  data = db.execute(f"SELECT * FROM TESTERS WHERE subsidiaryid = {subsidiaryCode}").fetchall()
+  data = db.execute(f"SELECT T0.testercode, T0.tester_name, T1.brandname, T0.tester_axe FROM TESTERS T0 INNER JOIN MARCAS T1 WHERE T0.subsidiaryid = {subsidiaryCode}").fetchall()
   brands = db.execute(f"SELECT brandname FROM MARCAS WHERE subsidiaryid = {subsidiaryCode} ORDER BY brandname ASC").fetchall()
   beauty_advisors = db.execute(f"SELECT id, fullname FROM CONSEJERAS WHERE subsidiaryid = {subsidiaryCode}")
   pos = db.execute(f"SELECT id, pos_name FROM POS WHERE subsidiaryid = {subsidiaryCode} ORDER BY pos_name ASC")
