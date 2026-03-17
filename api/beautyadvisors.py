@@ -9,6 +9,7 @@ bp = Blueprint("beautyadvisors", __name__, url_prefix="/beautyadvisors")
 
 
 @bp.route("/")
+@login_required
 def index():
     """Return all the Beauty Advisors"""
     db = get_db()

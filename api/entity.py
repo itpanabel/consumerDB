@@ -8,6 +8,7 @@ from api.db import get_db
 bp = Blueprint("entity", __name__, url_prefix="/entity")
 
 @bp.route("/")
+@login_required
 def index():
     """Return all entities created"""
     db = get_db()

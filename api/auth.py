@@ -43,6 +43,7 @@ def load_logged_in_user():
 
 
 @bp.route("/register", methods=("GET", "POST"))
+@login_required
 def register():
     """Register new user in database.
     Validate if the username is not

@@ -50,7 +50,7 @@ def testers_request():
   # para colombia el debe estar habilitado del 20-28 de cada mes.
   if int(subsidiaryCode) == 1:
     start_day = 1
-    end_day = 8
+    end_day = 8 # Close on 8th of the month for Panama.
   else:
     start_day = 15
     end_day = 28
@@ -277,6 +277,7 @@ def get_brands(list_id:str, group_id:str):
     return brands
   except ApiClientError as error:
     print("Error: {}".format(error.text))
+    return {}
 
 
 def find_specifics(list_id, email, specific, new_options):

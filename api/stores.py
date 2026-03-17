@@ -9,6 +9,7 @@ bp = Blueprint("stores", __name__, url_prefix="/stores")
 
 
 @bp.route("/")
+@login_required
 def index():
     """Return all stores created"""
     db = get_db()
