@@ -6,6 +6,7 @@
 
 {% block content %}
   <form method="post" class="row g-3">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="col-md-6">
       <label for="store" class="form-label">Tienda</label>
       <input type="text" class="form-control" id="store" name="store" value="{{ request.form['store'] or store['storename'] }}" required>

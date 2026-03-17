@@ -196,7 +196,7 @@ def update(id):
 
 
 
-@bp.route("<id>/detele", methods=("GET", "POST"))
+@bp.route("<id>/delete", methods=("GET", "POST"))
 @login_required
 def delete(id):
     """Delete tester from Database."""
@@ -208,6 +208,7 @@ def delete(id):
 
 
 @bp.route("/export_resquest", methods=("GET", "POST"))
+@login_required
 def export_resquest():
     """This will render the tester requested
     for the current month."""

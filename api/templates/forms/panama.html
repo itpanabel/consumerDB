@@ -10,6 +10,7 @@
   <div class="container">
     <!-- General Data -->
     <form class="row g-3 needs-validation" method="post" id="customerData" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="col-md-6">
         <label for="fname" class="form-label" >Nombre</label>
         <input type="text" class="form-control" id="fname" name="NOMBRE" required>

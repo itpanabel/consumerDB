@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template
+from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -28,6 +29,9 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    # CSRF Protection
+    CSRFProtect(app)
 
     # DB
     from . import db

@@ -38,6 +38,7 @@ def get_entity(id):
 
 
 @bp.route("/create", methods=("GET", "POST"))
+@login_required
 def create():
     """Create a new Entity"""
     if request.method == "POST":
@@ -100,6 +101,7 @@ def update(id):
 
 
 @bp.route("<int:id>/delete", methods=("POST",))
+@login_required
 def delete(id):
     """Delete a subsidiary
     Ensure that the entity exist and the

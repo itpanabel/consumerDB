@@ -6,6 +6,7 @@
 
 {% block content %}
 <form method="post" class="g-3 needs-validation" novalidate>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <div class="mb-3">
     <label for="pos" class="form-label">Punto de Venta</label>
     <select name="pos" id="pos" class="form-select" required>

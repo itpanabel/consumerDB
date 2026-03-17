@@ -38,9 +38,9 @@ def send_testers(subsidiary: int, emailTo: str):
       f"FROM ORDEREDTESTERS T0 "
       f"INNER JOIN POS T1 ON T0.orderpos = T1.id "
       f"INNER JOIN TESTERS T2 ON T0.itemcode = T2.testercode "
-      f"WHERE strftime('%m', T0.orderdate) = strftime('%m', 'now') AND T0.Subsidiary = {subsidiary}"
-  )
+      f"WHERE strftime('%m', T0.orderdate) = strftime('%m', 'now') AND T0.Subsidiary = ?", (subsidiary,))
   result = cursor.fetchall()
+  headers = [i[0] for i in cursor.description]  # capture before closing connection
 
   # Close the database connection
   conn.close()
@@ -51,7 +51,7 @@ def send_testers(subsidiary: int, emailTo: str):
   # Export the query result to a CSV file
   with open(csv_filename, 'w', newline='') as csv_file:
       csv_writer = csv.writer(csv_file, delimiter=';')
-      csv_writer.writerow([i[0] for i in cursor.description])  # Write column headers
+      csv_writer.writerow(headers)  # Write column headers
       csv_writer.writerows(result)
 
   message = Mail(
@@ -109,7 +109,7 @@ def send_testers(subsidiary: int, emailTo: str):
 # every month.
 if current_date.day == 8:
    send_testers(1,"probadores")
-elif current_date == calendar.monthrange(current_date.year, current_date.month)[1]:
+elif current_date.day == calendar.monthrange(current_date.year, current_date.month)[1]:
    send_testers(2, "probadores.colombia")
 else:
    print(f"\nNo email was sent! The day of the month is {current_date.day}\n")

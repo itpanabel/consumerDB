@@ -39,11 +39,13 @@ def index():
 @bp.route("/testers-request", methods=("GET", "POST"))
 def testers_request():
   db = get_db()
-  subsidiaryCode = request.args.get("country")
-  data = db.execute(f"SELECT T0.testercode, T0.tester_name, T1.brandname, T0.tester_axe FROM TESTERS T0 INNER JOIN MARCAS T1 ON T0.tester_id = T1.id WHERE T0.subsidiaryid = {subsidiaryCode}").fetchall()
-  brands = db.execute(f"SELECT brandname FROM MARCAS WHERE subsidiaryid = {subsidiaryCode} ORDER BY brandname ASC").fetchall()
-  beauty_advisors = db.execute(f"SELECT id, fullname FROM CONSEJERAS WHERE subsidiaryid = {subsidiaryCode}")
-  pos = db.execute(f"SELECT id, pos_name FROM POS WHERE subsidiaryid = {subsidiaryCode} ORDER BY pos_name ASC")
+  subsidiaryCode = request.args.get("country", type=int)
+  if subsidiaryCode is None:
+    abort(400)
+  data = db.execute(f"SELECT T0.testercode, T0.tester_name, T1.brandname, T0.tester_axe FROM TESTERS T0 INNER JOIN MARCAS T1 ON T0.tester_id = T1.id WHERE T0.subsidiaryid = ?", (subsidiaryCode,)).fetchall()
+  brands = db.execute(f"SELECT brandname FROM MARCAS WHERE subsidiaryid = ? ORDER BY brandname ASC", (subsidiaryCode,)).fetchall()
+  beauty_advisors = db.execute(f"SELECT id, fullname FROM CONSEJERAS WHERE subsidiaryid = ?", (subsidiaryCode,))
+  pos = db.execute(f"SELECT id, pos_name FROM POS WHERE subsidiaryid = ? ORDER BY pos_name ASC", (subsidiaryCode,))
   current_date = datetime.now()
   # para colombia el debe estar habilitado del 20-28 de cada mes.
   if int(subsidiaryCode) == 1:

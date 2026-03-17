@@ -133,7 +133,7 @@ def update(id):
     return render_template("brands/update.html", brand=brand, entities=entities)
 
 
-@bp.route("<id>/detele", methods=("GET", "POST"))
+@bp.route("<id>/delete", methods=("GET", "POST"))
 @login_required
 def delete(id):
     """Delete tester from Database."""
