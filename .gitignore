@@ -16,6 +16,7 @@ build/
 .log
 *.csv
 error.log
+app.log
 
 ### macOS ###
 # General

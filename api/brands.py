@@ -16,7 +16,7 @@ def index():
     """Return all brands created"""
     db = get_db()
     username = g.user['username']
-    if (g.user['username'] != "admin"):
+    if (g.user['role'] != "admin"):
       userCountry = db.execute("SELECT subsidiary_id FROM USERS WHERE username = ?", (username,)).fetchone()[0]
       brands = db.execute(
           "SELECT m.id, m.brandname, m.brandcode, s.entityname "

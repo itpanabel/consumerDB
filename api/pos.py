@@ -13,11 +13,20 @@ bp = Blueprint("pos", __name__, url_prefix="/pos")
 def index():
     """Return all pos created"""
     db = get_db()
-    pos = db.execute(
-        "SELECT T0.id, T0.pos_name, T1.entityname "
-        "FROM POS T0 INNER JOIN SUBSIDIARIES T1 ON T0.subsidiaryid = T1.id "
-        "ORDER BY T0.pos_name"
-    ).fetchall()
+    if g.user["role"] != "admin":
+        pos = db.execute(
+            "SELECT T0.id, T0.pos_name, T1.entityname "
+            "FROM POS T0 INNER JOIN SUBSIDIARIES T1 ON T0.subsidiaryid = T1.id "
+            "WHERE T0.subsidiaryid = ? "
+            "ORDER BY T0.pos_name",
+            (g.user["subsidiary_id"],)
+        ).fetchall()
+    else:
+        pos = db.execute(
+            "SELECT T0.id, T0.pos_name, T1.entityname "
+            "FROM POS T0 INNER JOIN SUBSIDIARIES T1 ON T0.subsidiaryid = T1.id "
+            "ORDER BY T0.pos_name"
+        ).fetchall()
     return render_template("pos/index.html", pos=pos)
 
 
@@ -42,10 +51,10 @@ def get_pos(id):
 @login_required
 def create():
     """Create a new pos"""
+    db = get_db()
     if request.method == "POST":
         pos = request.form["pos"]
-        entity = request.form["entity"]
-        db = get_db()
+        entity = request.form["entity"] if g.user["role"] == "admin" else str(g.user["subsidiary_id"])
         error = None
 
         if not pos:
@@ -61,21 +70,18 @@ def create():
                 )
                 db.commit()
             except db.IntegrityError:
-                # if pos already exist
-                # show error.
                 error = f"{pos.capitalize()} ya existe en la base de datos."
             else:
                 return redirect(url_for("pos.index"))
 
         flash(error, "alert-danger")
 
-    # Get Entities for Select tag
-    db = get_db()
-    entities = db.execute(
-        "SELECT id, entityname "
-        "FROM SUBSIDIARIES "
-        "ORDER BY id"
-    ).fetchall()
+    if g.user["role"] == "admin":
+        entities = db.execute("SELECT id, entityname FROM SUBSIDIARIES ORDER BY id").fetchall()
+    else:
+        entities = db.execute(
+            "SELECT id, entityname FROM SUBSIDIARIES WHERE id = ?", (g.user["subsidiary_id"],)
+        ).fetchall()
 
     return render_template("pos/create.html", entities=entities)
 
@@ -85,42 +91,45 @@ def create():
 def update(id):
     """Update data for a pos"""
     pos = get_pos(id)
+    db = get_db()
+
+    if g.user["role"] != "admin" and pos["subsidiaryid"] != g.user["subsidiary_id"]:
+        abort(403)
 
     if request.method == "POST":
-        pos = request.form["pos"]
-        entity = request.form["entity"]
+        pos_name = request.form["pos"]
+        entity = request.form["entity"] if g.user["role"] == "admin" else str(g.user["subsidiary_id"])
         error = None
 
-        if not pos or not entity:
+        if not pos_name or not entity:
             error = "Por favor llenar los campos"
 
         if error is not None:
             flash(error, "alert-danger")
         else:
-            db = get_db()
             db.execute(
                 "UPDATE POS SET pos_name = ?, subsidiaryid = ? "
-                "WHERE id = ?", (pos, entity, id)
+                "WHERE id = ?", (pos_name, entity, id)
             )
             db.commit()
             return redirect(url_for("pos.index"))
 
-    # Get Entities for Select tag
-    db = get_db()
-    entities = db.execute(
-        "SELECT id, entityname "
-        "FROM SUBSIDIARIES "
-        "ORDER BY id"
-    ).fetchall()
+    if g.user["role"] == "admin":
+        entities = db.execute("SELECT id, entityname FROM SUBSIDIARIES ORDER BY id").fetchall()
+    else:
+        entities = db.execute(
+            "SELECT id, entityname FROM SUBSIDIARIES WHERE id = ?", (g.user["subsidiary_id"],)
+        ).fetchall()
     return render_template("pos/update.html", pos=pos, entities=entities)
-
 
 
 @bp.route("<int:id>/delete", methods=("GET", "POST"))
 @login_required
 def delete(id):
     """Delete pos from Database."""
-    get_pos(id)
+    pos = get_pos(id)
+    if g.user["role"] != "admin" and pos["subsidiaryid"] != g.user["subsidiary_id"]:
+        abort(403)
     db = get_db()
     db.execute("DELETE FROM POS WHERE id = ?", (id,))
     db.commit()

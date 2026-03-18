@@ -8,8 +8,11 @@ from pathlib import Path
 from api.db import get_db
 import hashlib
 import json
+import logging
 import re
 import os
+
+logger = logging.getLogger(__name__)
 
 #
 # Load API Keys
@@ -18,13 +21,12 @@ load_dotenv(Path(".env"))
 API_KEY = os.getenv("API_KEY")
 SERVER_PREFIX = os.getenv("SERVER_PREFIX")
 
-# Global Variables - TEMP
-LIST_ID_PA = "4b890a1b03" # Country - Audience - Panamá
-LIST_ID_CO = "cae142989c" # Country - Audience - Colombia
-LIST_ID_CR = "061656a504" # Country - Audience - Costa Rica
-GROUP_ID_PA = "383283a2bd" # group ID of interests - Panama
-GROUP_ID_CO = "cb260f02fa" # group ID of interests - Colombia
-GROUP_ID_CR = "" # group ID of interests - Costa Rica
+LIST_ID_PA = os.getenv("MAILCHIMP_LIST_ID_PA", "")
+LIST_ID_CO = os.getenv("MAILCHIMP_LIST_ID_CO", "")
+LIST_ID_CR = os.getenv("MAILCHIMP_LIST_ID_CR", "")
+GROUP_ID_PA = os.getenv("MAILCHIMP_GROUP_ID_PA", "")
+GROUP_ID_CO = os.getenv("MAILCHIMP_GROUP_ID_CO", "")
+GROUP_ID_CR = os.getenv("MAILCHIMP_GROUP_ID_CR", "")
 
 
 bp = Blueprint("forms", __name__)
@@ -68,7 +70,7 @@ def testers_request():
             (item, orderedDate, advisor, pdv, subsidiaryCode)
           )
           db.commit()
-          print(f"POS: {pdv}, consejera: {advisor} Articulos Solicitados: {item}, solicitado: {orderedDate.strftime('%Y-%m-%d %H:%M:%S.%f')}")
+          logger.info("Tester order — POS: %s, consejera: %s, item: %s, solicitado: %s", pdv, advisor, item, orderedDate.strftime("%Y-%m-%d %H:%M:%S"))
         flash("Se envió su pedido exitosamente!\n Debe estarlo recibiendo el mes siguiente.", "alert-success")
       except db.IntegrityError:
         flash("Por favor contactar a soporte", "alert-warning")
@@ -128,8 +130,8 @@ def panama():
         if email_address != "":
           add_customer(LIST_ID_PA, email_address, first_name, last_name,
                       phone, birth_day, gender, store, advisor, country,
-                      state, interests, guerlain_specific, sisley_specific,
-                      adp_specific, payot_specific, phyto_specific, notas, my_geoloc)
+                      state, interests, guerlain_specific, sisley_specific, # type: ignore
+                      adp_specific, payot_specific, phyto_specific, notas, my_geoloc) # type: ignore
 
 
     return render_template("forms/panama.html", my_brands=my_brands, beauty_advisors=beauty_advisors, stores=stores)
@@ -185,7 +187,7 @@ def colombia():
           add_customer(LIST_ID_CO, email_address, first_name, last_name,
                       phone, birth_day, gender, store, advisor, country,
                       state, interests, guerlain_specific, sisley_specific,
-                      adp_specific, payot_specific, phyto_specific, notas, my_geoloc)
+                      adp_specific, payot_specific, phyto_specific, notas, my_geoloc) # type: ignore
 
 
 
@@ -253,8 +255,15 @@ def add_customer(list_id:str, email:str,first_name:str, last_name:str, phone:str
     log = open("error.log", "+a")
     log.write(f"{now} - {email} - {beauty_advisor}: {json.dumps(error_json)} Geoloc: {geoloc}\n")
     log.close()
-    flash(error.text, "alert-danger")
-    print(f"{email}:\n{json.dumps(error_json, indent=2)}")
+    title = error_json.get("title", "")
+    _MAILCHIMP_MESSAGES = {
+      "Member Exists": "Este correo ya está registrado en nuestra base de datos.",
+      "Invalid Resource": "El correo electrónico no es válido.",
+      "Forgotten Email Not Subscribed": "Este correo no puede ser registrado. Por favor contactar a soporte.",
+      "Invalid Email Address": "El correo electrónico no es válido.",
+    }
+    user_message = _MAILCHIMP_MESSAGES.get(title, "Ocurrió un error al registrar el usuario. Por favor intentar de nuevo.")
+    flash(user_message, "alert-danger")
 
 
 def get_brands(list_id:str, group_id:str):
@@ -276,7 +285,7 @@ def get_brands(list_id:str, group_id:str):
       brands[key] = item["name"]
     return brands
   except ApiClientError as error:
-    print("Error: {}".format(error.text))
+    logger.error("get_brands failed: %s", error.text)
     return {}
 
 
@@ -302,7 +311,7 @@ def find_specifics(list_id, email, specific, new_options):
       new_specific = ";".join(new_options)
       return re.sub("^;", "", new_specific)
     else:
-      print("Error: {}".format(error.text))
+      logger.error("find_specifics failed: %s", error.text)
 
 
 def lastday_of_month(mydate:datetime):

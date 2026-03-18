@@ -11,6 +11,8 @@ bp = Blueprint("entity", __name__, url_prefix="/entity")
 @login_required
 def index():
     """Return all entities created"""
+    if g.user["role"] != "admin":
+        abort(403)
     db = get_db()
     entities = db.execute(
         "SELECT *"
@@ -42,6 +44,8 @@ def get_entity(id):
 @login_required
 def create():
     """Create a new Entity"""
+    if g.user["role"] != "admin":
+        abort(403)
     if request.method == "POST":
         entity = request.form["entidad"]
         mailchimp_id = request.form["mailchimpid"]
@@ -76,6 +80,8 @@ def create():
 @login_required
 def update(id):
     """Update data for an entity"""
+    if g.user["role"] != "admin":
+        abort(403)
     subsidiary = get_entity(id)
 
     if request.method == "POST":
@@ -104,10 +110,9 @@ def update(id):
 @bp.route("<int:id>/delete", methods=("POST",))
 @login_required
 def delete(id):
-    """Delete a subsidiary
-    Ensure that the entity exist and the
-    user is logged.
-    """
+    """Delete a subsidiary"""
+    if g.user["role"] != "admin":
+        abort(403)
     get_entity(id)
     db = get_db()
     db.execute("DELETE FROM SUBSIDIARIES WHERE id = ?", (id,))

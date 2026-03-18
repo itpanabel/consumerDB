@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Editar Usuario{% endblock title %}</h1>
+{% endblock header %}
+
+{% block content %}
+  <form method="post" class="row g-3">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="col-md-6">
+      <label for="username" class="form-label">Nombre de Usuario</label>
+      <input type="text" class="form-control" id="username" name="username"
+             value="{{ request.form['username'] if request.form['username'] else user['username'] }}" required>
+    </div>
+    <div class="col-md-6">
+      <label for="role" class="form-label">Rol</label>
+      <select class="form-select" id="role" name="role" required>
+        <option value="user" {% if user["role"] == "user" %}selected{% endif %}>Usuario</option>
+        <option value="admin" {% if user["role"] == "admin" %}selected{% endif %}>Administrador</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="subsidiary_id" class="form-label">País</label>
+      <select class="form-select" id="subsidiary_id" name="subsidiary_id">
+        <option value="">— Ninguno (Admin global) —</option>
+        {% for sub in subsidiaries %}
+          <option value="{{ sub['id'] }}" {% if user["subsidiary_id"] == sub["id"] %}selected{% endif %}>
+            {{ sub["entityname"] }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="password" class="form-label">Nueva Contraseña <small class="text-muted">(dejar vacío para no cambiar)</small></label>
+      <input type="password" class="form-control" id="password" name="password" autocomplete="new-password">
+    </div>
+    <div class="d-grid gap-2 col-6 mx-auto">
+      <input type="submit" value="Actualizar" class="btn btn-primary btn-lg">
+      <a href="{{ url_for('auth.users') }}" class="btn btn-danger btn-lg">Cancelar</a>
+    </div>
+  </form>
+{% endblock content %}

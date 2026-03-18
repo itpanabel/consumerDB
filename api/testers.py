@@ -16,7 +16,7 @@ bp = Blueprint("testers", __name__, url_prefix="/testers")
 def index():
     """Return all testers created"""
     db = get_db()
-    if (g.user['username'] != "admin"):
+    if (g.user['role'] != "admin"):
       username = g.user['username']
       userCountry = db.execute("SELECT subsidiary_id FROM USERS WHERE username = ?", (username,)).fetchone()[0]
       testers = db.execute(
@@ -89,7 +89,7 @@ def create():
 
     # Get Entities for Select tag
     db = get_db()
-    if (g.user['username'] != "admin"):
+    if (g.user['role'] != "admin"):
       username = g.user['username']
       userCountry = db.execute("SELECT subsidiary_id FROM USERS WHERE username = ?", (username,)).fetchone()[0]
       brands = db.execute("SELECT id, brandname FROM MARCAS WHERE subsidiaryid = ? ORDER BY brandname", (userCountry,)).fetchall()
@@ -112,24 +112,47 @@ def import_testers():
     ALLOWED_EXTENSIONS = {'csv'}
     UPLOAD_FOLDER = os.path.join('api/static', 'uploads')
     db = get_db()
+
+    # Determine the user's subsidiary for scoping
+    if g.user['role'] != 'admin':
+        subsidiaryid = db.execute(
+            "SELECT subsidiary_id FROM USERS WHERE id = ?", (g.user['id'],)
+        ).fetchone()[0]
+    else:
+        subsidiaryid = None  # admin must select via form
+
     if request.method == "POST":
         csv_file = request.files["fileToImport"]
+        if not csv_file or not csv_file.filename:
+            flash("Se requiere archivo", "alert-danger")
+            return redirect("/testers/import_testers")
         csv_filename = secure_filename(csv_file.filename)
         csv_delimeter = request.form["csvDelimeter"]
+
+        if g.user['role'] == 'admin':
+            subsidiaryid = request.form.get("entity", type=int)
+            if not subsidiaryid:
+                flash("Se requiere seleccionar un país.", "alert-danger")
+                return redirect("/testers/import_testers")
 
         if not csv_file:
             flash("Se requiere archivo", "alert-danger")
             return redirect("/testers/import_testers")
 
-        if csv_delimeter == "":
-            flash("Se requiere delimitador del archivo", "alert-danger")
+        if not ('.' in csv_filename and csv_filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS):
+            flash("Solo se permiten archivos CSV", "alert-danger")
+            return redirect("/testers/import_testers")
+
+        allowed_delimiters = [',', ';', '\t', '|']
+        if csv_delimeter not in allowed_delimiters:
+            flash("Delimitador no permitido. Use: coma, punto y coma, tabulador o pipe.", "alert-danger")
             return redirect("/testers/import_testers")
 
         uploaded_data_file_path = os.path.join(UPLOAD_FOLDER, csv_filename)
         csv_file.save(uploaded_data_file_path)
 
-        # limpia la tabla de testers viejos
-        db.execute("DELETE FROM TESTERS")
+        # Delete only this subsidiary's testers
+        db.execute("DELETE FROM TESTERS WHERE subsidiaryid = ?", (subsidiaryid,))
         db.commit()
 
         with open(uploaded_data_file_path, "r", encoding="utf-8-sig") as file:
@@ -143,14 +166,16 @@ def import_testers():
                 try:
                     db.execute(
                         "INSERT INTO TESTERS (testercode, tester_name, tester_id, tester_axe, subsidiaryid) VALUES (?, ?, ?, ?, ?)",
-                        (itemcode, itemname, itembrand, itemaxe, 1)
+                        (itemcode, itemname, itembrand, itemaxe, subsidiaryid)
                     )
                     db.commit()
                 except db.IntegrityError:
                     flash("El producto ya existe en la base de datos", "alert-warning")
             flash("Se importo el archivo correctamente!", "alert-success")
             return redirect("/testers")
-    return render_template("testers/import_testers.html")
+
+    entities = db.execute("SELECT id, entityname FROM SUBSIDIARIES ORDER BY id").fetchall()
+    return render_template("testers/import_testers.html", entities=entities, user_subsidiary=subsidiaryid, is_admin=g.user['role'] == 'admin')
 
 
 @bp.route("<string:id>/update", methods=("GET", "POST"))
@@ -159,6 +184,12 @@ def update(id):
     """Update data for a tester"""
     username = g.user['username']
     tester = get_tester(id)
+
+    if g.user['role'] != 'admin':
+        db = get_db()
+        userCountry = db.execute("SELECT subsidiary_id FROM USERS WHERE username = ?", (username,)).fetchone()[0]
+        if tester['subsidiaryid'] != userCountry:
+            abort(403)
 
     if request.method == "POST":
         tester_code = request.form["testercode"]
@@ -189,8 +220,11 @@ def update(id):
         "FROM SUBSIDIARIES "
         "ORDER BY id"
     ).fetchall()
-    userCountry = db.execute("SELECT subsidiary_id FROM USERS WHERE username = ?", (username,)).fetchone()[0]
-    brands = db.execute("SELECT id, brandname FROM MARCAS WHERE subsidiaryid = ? ORDER BY brandname", (userCountry,)).fetchall()
+    if g.user['role'] != 'admin':
+        userCountry = db.execute("SELECT subsidiary_id FROM USERS WHERE username = ?", (username,)).fetchone()[0]
+        brands = db.execute("SELECT id, brandname FROM MARCAS WHERE subsidiaryid = ? ORDER BY brandname", (userCountry,)).fetchall()
+    else:
+        brands = db.execute("SELECT id, brandname FROM MARCAS ORDER BY brandname").fetchall()
     axes = db.execute("SELECT DISTINCT tester_axe FROM TESTERS").fetchall()
 
     return render_template("testers/update.html", tester=tester, entities=entities, brands=brands, axes=axes)

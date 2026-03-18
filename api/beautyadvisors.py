@@ -13,10 +13,18 @@ bp = Blueprint("beautyadvisors", __name__, url_prefix="/beautyadvisors")
 def index():
     """Return all the Beauty Advisors"""
     db = get_db()
-    beautyadvisors = db.execute(
-        "SELECT T0.id, T0.fullname, T1.entityname "
-        "FROM CONSEJERAS T0 INNER JOIN SUBSIDIARIES T1 ON T0.subsidiaryid = T1.id"
-    ).fetchall()
+    if g.user["role"] != "admin":
+        beautyadvisors = db.execute(
+            "SELECT T0.id, T0.fullname, T1.entityname "
+            "FROM CONSEJERAS T0 INNER JOIN SUBSIDIARIES T1 ON T0.subsidiaryid = T1.id "
+            "WHERE T0.subsidiaryid = ?",
+            (g.user["subsidiary_id"],)
+        ).fetchall()
+    else:
+        beautyadvisors = db.execute(
+            "SELECT T0.id, T0.fullname, T1.entityname "
+            "FROM CONSEJERAS T0 INNER JOIN SUBSIDIARIES T1 ON T0.subsidiaryid = T1.id"
+        ).fetchall()
     return render_template("beautyadvisors/index.html", beautyadvisors=beautyadvisors)
 
 
@@ -40,10 +48,10 @@ def get_beautyadvisor(id):
 @login_required
 def create():
     """Create Beauty Advisors"""
+    db = get_db()
     if request.method == "POST":
         advisor_name = request.form["fullname"]
-        advisor_country = request.form["entity"]
-        db = get_db()
+        advisor_country = request.form["entity"] if g.user["role"] == "admin" else str(g.user["subsidiary_id"])
         error = None
 
         if not advisor_name:
@@ -65,13 +73,12 @@ def create():
 
         flash(error, "alert-danger")
 
-    # data for Select Tag
-    db = get_db()
-    entities = db.execute(
-        "SELECT id, entityname "
-        "FROM SUBSIDIARIES "
-        "ORDER BY id"
-    ).fetchall()
+    if g.user["role"] == "admin":
+        entities = db.execute("SELECT id, entityname FROM SUBSIDIARIES ORDER BY id").fetchall()
+    else:
+        entities = db.execute(
+            "SELECT id, entityname FROM SUBSIDIARIES WHERE id = ?", (g.user["subsidiary_id"],)
+        ).fetchall()
 
     return render_template("beautyadvisors/create.html", entities=entities)
 
@@ -79,37 +86,37 @@ def create():
 @bp.route("<int:id>/update", methods=("GET", "POST"))
 @login_required
 def update(id):
-    """Update name and country for
-    Beauty Advisors"""
-
+    """Update name and country for Beauty Advisors"""
     beauty_advisor = get_beautyadvisor(id)
+    db = get_db()
+
+    if g.user["role"] != "admin" and beauty_advisor["subsidiaryid"] != g.user["subsidiary_id"]:
+        abort(403)
 
     if request.method == "POST":
-        beauty_advisor = request.form["fullname"]
-        advisor_country = request.form["entity"]
+        advisor_name = request.form["fullname"]
+        advisor_country = request.form["entity"] if g.user["role"] == "admin" else str(g.user["subsidiary_id"])
         error = None
 
-        if not beauty_advisor or not advisor_country:
+        if not advisor_name or not advisor_country:
             error = "Por favor llenar campos."
 
         if error is not None:
             flash(error, "alert-danger")
         else:
-            db = get_db()
             db.execute(
                 "UPDATE CONSEJERAS SET fullname = ?, subsidiaryid = ? "
-                "WHERE id = ?", (beauty_advisor, advisor_country, id)
+                "WHERE id = ?", (advisor_name, advisor_country, id)
             )
             db.commit()
             return redirect(url_for("beautyadvisors.index"))
 
-    # get data for select Tag
-    db = get_db()
-    entities = db.execute(
-        "SELECT id, entityname "
-        "FROM SUBSIDIARIES "
-        "ORDER BY id"
-    ).fetchall()
+    if g.user["role"] == "admin":
+        entities = db.execute("SELECT id, entityname FROM SUBSIDIARIES ORDER BY id").fetchall()
+    else:
+        entities = db.execute(
+            "SELECT id, entityname FROM SUBSIDIARIES WHERE id = ?", (g.user["subsidiary_id"],)
+        ).fetchall()
 
     return render_template("beautyadvisors/update.html", beauty_advisor=beauty_advisor, entities=entities)
 
@@ -117,10 +124,10 @@ def update(id):
 @bp.route("<int:id>/delete", methods=("GET", "POST"))
 @login_required
 def delete(id):
-    """Delete beauty advisors from Database.
-    :params
-    id:int database id of record"""
-    get_beautyadvisor(id)
+    """Delete beauty advisors from Database."""
+    beauty_advisor = get_beautyadvisor(id)
+    if g.user["role"] != "admin" and beauty_advisor["subsidiaryid"] != g.user["subsidiary_id"]:
+        abort(403)
     db = get_db()
     db.execute("DELETE FROM CONSEJERAS WHERE id = ?", (id,))
     db.commit()

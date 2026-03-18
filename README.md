@@ -22,10 +22,18 @@ python -c 'import secrets; print(secrets.token_hex(32))'
 
 ## Database Setup
 
-Initialize the SQLite database (required on first run):
+### Fresh Install
+Initializes the database from scratch. **Destructive — wipes all existing data.**
 ```bash
 flask --app api init-db
 ```
+
+### Production / Existing Database
+Applies any missing tables without touching existing data, then prompts to seed an admin user:
+```bash
+flask --app api migrate-db
+```
+Running `migrate-db` more than once is safe — tables and existing users are left untouched.
 
 ## Running in Development Mode
 

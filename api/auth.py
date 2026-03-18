@@ -1,9 +1,10 @@
 import functools
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, abort, flash, g, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 from api.db import get_db
+from api import limiter
 
 # Create Blueprint auth to
 # manage user login session
@@ -50,9 +51,15 @@ def register():
     taken. Hashes the password for
     security.
     """
+    if g.user["role"] != "admin":
+        abort(403)
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        role = request.form.get("role", "user")
+        if role not in ("admin", "user"):
+            abort(400)
         db = get_db()
         error = None
 
@@ -64,8 +71,8 @@ def register():
         if error is None:
             try:
                 db.execute(
-                    "INSERT INTO USERS (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password)),
+                    "INSERT INTO USERS (username, password, role) VALUES (?, ?, ?)",
+                    (username, generate_password_hash(password), role),
                 )
                 db.commit()
             except db.IntegrityError:
@@ -73,15 +80,98 @@ def register():
                 # commit to fail. Show a validation error.
                 error = f"El usuario {username} ya existe."
             else:
-                # Sucess, go the login page.
-                return redirect(url_for("auth.login"))
+                flash(f"Usuario '{username}' creado.", "alert-success")
+                return redirect(url_for("auth.users"))
 
         flash(error, "alert-danger")
 
     return render_template("auth/register.html")
 
 
+@bp.route("/users")
+@login_required
+def users():
+    """List all users. Admin only."""
+    if g.user["role"] != "admin":
+        abort(403)
+    db = get_db()
+    all_users = db.execute(
+        "SELECT u.id, u.username, u.role, s.entityname "
+        "FROM USERS u LEFT JOIN SUBSIDIARIES s ON u.subsidiary_id = s.id "
+        "ORDER BY u.username"
+    ).fetchall()
+    return render_template("auth/users.html", users=all_users)
+
+
+@bp.route("/users/<int:id>/update", methods=("GET", "POST"))
+@login_required
+def update_user(id):
+    """Update a user's username, role, and subsidiary. Admin only."""
+    if g.user["role"] != "admin":
+        abort(403)
+    db = get_db()
+    user = db.execute("SELECT * FROM USERS WHERE id = ?", (id,)).fetchone()
+    if user is None:
+        abort(404)
+
+    if request.method == "POST":
+        username = request.form["username"]
+        role = request.form.get("role", "user")
+        subsidiary_id = request.form.get("subsidiary_id") or None
+        new_password = request.form.get("password", "").strip()
+        error = None
+
+        if not username:
+            error = "Nombre de usuario es requerido."
+        elif role not in ("admin", "user"):
+            error = "Rol inválido."
+
+        if error is None:
+            try:
+                if new_password:
+                    db.execute(
+                        "UPDATE USERS SET username = ?, role = ?, subsidiary_id = ?, password = ? WHERE id = ?",
+                        (username, role, subsidiary_id, generate_password_hash(new_password), id),
+                    )
+                else:
+                    db.execute(
+                        "UPDATE USERS SET username = ?, role = ?, subsidiary_id = ? WHERE id = ?",
+                        (username, role, subsidiary_id, id),
+                    )
+                db.commit()
+            except db.IntegrityError:
+                error = f"El usuario '{username}' ya existe."
+            else:
+                flash(f"Usuario '{username}' actualizado.", "alert-success")
+                return redirect(url_for("auth.users"))
+
+        flash(error, "alert-danger")
+
+    subsidiaries = db.execute("SELECT id, entityname FROM SUBSIDIARIES ORDER BY id").fetchall()
+    return render_template("auth/update_user.html", user=user, subsidiaries=subsidiaries)
+
+
+@bp.route("/users/<int:id>/delete", methods=("POST",))
+@login_required
+def delete_user(id):
+    """Delete a user. Admin only. Cannot delete yourself."""
+    if g.user["role"] != "admin":
+        abort(403)
+    if g.user["id"] == id:
+        flash("No puedes eliminar tu propia cuenta.", "alert-danger")
+        return redirect(url_for("auth.users"))
+    db = get_db()
+    user = db.execute("SELECT username FROM USERS WHERE id = ?", (id,)).fetchone()
+    if user is None:
+        abort(404)
+    db.execute("DELETE FROM USERS WHERE id = ?", (id,))
+    db.commit()
+    flash(f"Usuario '{user['username']}' eliminado.", "alert-success")
+    return redirect(url_for("auth.users"))
+
+
 @bp.route("/login", methods=("GET", "POST"))
+@limiter.limit("5 per minute")
 def login():
     """Log in registered user by adding the
     user id to the session.

@@ -2,11 +2,19 @@ from dotenv import load_dotenv
 from pathlib import Path
 import calendar
 import datetime
+import logging
 import sqlite3
 import base64
 import csv
 import sys
 import os
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
 
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, FileType, From, Disposition, Subject, To, HtmlContent)
@@ -90,16 +98,15 @@ def send_testers(subsidiary: int, emailTo: str):
   sg = SendGridAPIClient(SENDGRID_API_KEY)
   response = sg.send(message_body)
   if response.status_code != 202:
-     # en caso de error
-     print(f"\nStatus: {response.status_code}\n\nBody:\n{response.body}\n\nHeaders:\n\n{response.headers}\n")
+     logger.error("SendGrid error — status: %s, body: %s", response.status_code, response.body)
+  else:
+    logger.info("Email enviado exitosamente a %s@panabel.com", emailTo)
 
-  print("\nEmail enviado exitosamente!\n")
   # Delete File Sent
   if os.path.exists(csv_filename):
-    # aling here
     os.remove(csv_filename)
   else:
-    print("File not found!")
+    logger.warning("CSV file not found for deletion: %s", csv_filename)
 
 
 # Execute email send on the 8 for
@@ -112,4 +119,4 @@ if current_date.day == 8:
 elif current_date.day == calendar.monthrange(current_date.year, current_date.month)[1]:
    send_testers(2, "probadores.colombia")
 else:
-   print(f"\nNo email was sent! The day of the month is {current_date.day}\n")
+   logger.info("No email sent — day %d is not a dispatch day", current_date.day)

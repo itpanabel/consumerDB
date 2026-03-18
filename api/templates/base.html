@@ -42,9 +42,11 @@
               <a class="nav-link" aria-current="page" href="/">Home</a>
             </li>
             {% if g.user %}
+            {% if g.user['role'] == 'admin' %}
             <li class="nav-item">
               <a href="{{ url_for('entity.index') }}" class="nav-link {% if request.endpoint=='entity.index' %}active{% endif %}">Paises</a>
             </li>
+            {% endif %}
             <li class="nav-item">
               <a href="{{ url_for('stores.index') }}" class="nav-link {% if request.endpoint=='stores.index' %}active{% endif %}">Tiendas</a>
             </li>
@@ -63,6 +65,11 @@
           <li class="nav-item">
             <a href="{{ url_for('brands.index') }}" class="nav-link {% if request.endpoint=='brands.index' %}active{% endif %}">Marcas</a>
           </li>
+          {% if g.user['role'] == 'admin' %}
+          <li class="nav-item">
+            <a href="{{ url_for('auth.users') }}" class="nav-link {% if request.endpoint=='auth.users' or request.endpoint=='auth.update_user' %}active{% endif %}">Usuarios</a>
+          </li>
+          {% endif %}
           {% else %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
